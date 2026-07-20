@@ -832,3 +832,6 @@ error.message
 
 
 loadStore();
+
+console.log("loadStore 啟動完成");
+
