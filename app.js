@@ -1,16 +1,14 @@
-console.log("Bing Sha app.js 已載入");
-
-
-// Google Apps Script API
-
 const API_URL =
-"https://script.google.com/macros/s/AKfycbyAuzI3V-43ZAQqFu2yH7jm6vpzVfxd1adStiCZsPEHfvWGL3YlVb7gVySAWty2_8XIDw/exec";
+"https://script.google.com/macros/s/AKfycbzoQK8CDdnOsfjytLWq5WoWguIEJ6Q_XYg2kssNYbcZr6gVz3wIdsc576yLYE3U7YKs6Q/exec";
 
 
 
-// 商品資料
+let cart=[];
 
-const products = [
+
+
+const products=[
+
 
 {
 name:"綠豆沙",
@@ -32,43 +30,201 @@ name:"隱藏版(百香果風味冰沙)",
 price:50
 }
 
+
 ];
 
 
 
-let cart = [];
+
+// =====================
+// 讀取設定
+// =====================
+
+async function loadStore(){
+
+
+let res =
+await fetch(
+API_URL+"?type=settings"
+);
+
+
+let settings =
+await res.json();
 
 
 
-// ======================
+let status =
+document.getElementById(
+"storeStatus"
+);
+
+
+
+let notice =
+document.getElementById(
+"announcement"
+);
+
+
+
+if(settings["公告"]){
+
+
+notice.innerHTML=
+"📢 "
++
+settings["公告"];
+
+
+}
+
+
+
+if(settings["店休"]==="ON"){
+
+
+status.innerHTML=
+"🔴 今日店休";
+
+
+disableOrder();
+
+return;
+
+
+}
+
+
+
+if(settings["接受訂單"]==="OFF"){
+
+
+status.innerHTML=
+"🟠 暫停接單";
+
+
+disableOrder();
+
+return;
+
+
+}
+
+
+
+let now =
+new Date();
+
+
+
+let time =
+now.getHours()
+.toString()
+.padStart(2,"0")
++
+":"
++
+now.getMinutes()
+.toString()
+.padStart(2,"0");
+
+
+
+if(
+time >= settings["開店時間"]
+&&
+time <= settings["打烊時間"]
+){
+
+
+status.innerHTML=
+"🟢 目前營業中";
+
+
+}
+else{
+
+
+status.innerHTML=
+"🔴 目前休息時間";
+
+
+disableOrder();
+
+
+}
+
+
+}
+
+
+
+
+
+
+function disableOrder(){
+
+
+let btn =
+document.getElementById(
+"submitBtn"
+);
+
+
+if(btn){
+
+btn.disabled=true;
+
+btn.innerHTML=
+"目前停止接單";
+
+}
+
+
+}
+
+
+
+
+
+
+// =====================
 // 顯示商品
-// ======================
+// =====================
 
-const menu = document.getElementById("menu");
+let menu =
+document.getElementById(
+"menu"
+);
 
 
-if(menu){
 
-
-products.forEach((item,index)=>{
+products.forEach((p,i)=>{
 
 
 menu.innerHTML += `
+
 
 <div class="card">
 
 
 <h3>
-${item.name}
+
+${p.name}
+
 </h3>
 
 
 <p>
-${item.price} 元
+
+${p.price} 元
+
 </p>
 
 
-<button onclick="addCart(${index})">
+
+<button onclick="addCart(${i})">
 
 加入購物車
 
@@ -81,44 +237,36 @@ ${item.price} 元
 `;
 
 
+
 });
 
 
-}else{
-
-
-console.error("找不到 menu");
-
-
-}
 
 
 
 
-// ======================
-// 加入購物車
-// ======================
 
-function addCart(index){
+function addCart(i){
 
 
-let item = products[index];
+let item =
+products[i];
+
 
 
 let exist =
 cart.find(
-x => x.name === item.name
+x=>x.name===item.name
 );
 
 
 
 if(exist){
 
-
 exist.qty++;
 
-
-}else{
+}
+else{
 
 
 cart.push({
@@ -135,109 +283,76 @@ qty:1
 }
 
 
-
 showCart();
-
-
-alert(
-item.name + " 已加入購物車"
-);
 
 
 }
 
 
 
-window.addCart = addCart;
 
 
 
-
-// ======================
-// 顯示購物車
-// ======================
 
 function showCart(){
 
 
 let box =
-document.getElementById("cart");
-
-
-if(!box) return;
+document.getElementById(
+"cart"
+);
 
 
 
 box.innerHTML="";
 
 
-let total = 0;
+let total=0;
 
 
 
-cart.forEach(item=>{
+cart.forEach(x=>{
 
 
 box.innerHTML += `
 
-
-<div class="card">
-
-
 <p>
 
-${item.name}
+${x.name}
 
-<br>
+×
 
+${x.qty}
 
-數量：
+=
 
-${item.qty}
-
-
-<br>
-
-
-小計：
-
-${item.price * item.qty}
+${x.price*x.qty}
 
 元
 
-
 </p>
-
-
-</div>
-
 
 `;
 
 
 
-total += item.price * item.qty;
+total +=
+x.price*x.qty;
 
 
 });
 
 
 
-let totalBox =
-document.getElementById("total");
-
-
-
-if(totalBox){
-
-
-totalBox.innerHTML =
-
-"總金額：" + total + " 元";
-
-
-}
-
+document.getElementById(
+"total"
+)
+.innerHTML=
+"總金額："
++
+total
++
+" 元";
 
 
 }
@@ -246,19 +361,17 @@ totalBox.innerHTML =
 
 
 
-// ======================
-// 送出訂單
-// ======================
 
 
 async function submitOrder(){
 
 
-
 if(cart.length===0){
 
 
-alert("請先選擇飲料");
+alert(
+"請先選擇飲料"
+);
 
 
 return;
@@ -268,145 +381,87 @@ return;
 
 
 
-let productText =
+let product =
+cart.map(x=>
+
+x.name+" x "+x.qty
+
+)
+.join("、");
 
 
-cart.map(item=>{
 
-
-return item.name + " x " + item.qty;
-
-
-}).join("、");
-
-
+let qty =
+cart.reduce(
+(a,b)=>a+b.qty,
+0
+);
 
 
 
 let total =
-
-
 cart.reduce(
-
-(sum,item)=>
-
-sum + item.price * item.qty,
-
+(a,b)=>a+b.price*b.qty,
 0
-
 );
 
 
 
-
-let data = {
-
-
-product:productText,
-
-
-qty:
-
-cart.reduce(
-
-(sum,item)=>
-
-sum + item.qty,
-
-0
-
-),
-
-
-total:total
-
-
-};
-
-
-
-
-try{
-
-
-
-let response = await fetch(
-
-API_URL,
-
-{
+let res =
+await fetch(API_URL,{
 
 method:"POST",
 
-
 headers:{
-
 
 "Content-Type":"text/plain"
 
-
 },
 
-
-body:JSON.stringify(data)
-
-
-}
-
-);
+body:JSON.stringify({
 
 
+product,
+
+qty,
+
+total
 
 
-let result = await response.json();
+})
+
+
+});
 
 
 
-document.getElementById("result").innerHTML = `
+let data =
+await res.json();
 
 
-✅ 訂單完成
 
-<br>
-
-
-訂單編號：
-
-<b>
-
-${result.orderId}
-
-</b>
+if(data.success){
 
 
-`;
-
+document.getElementById(
+"result"
+)
+.innerHTML=
+"✅ 訂單完成<br>訂單編號："
++
+data.orderId;
 
 
 cart=[];
 
-
 showCart();
 
 
-
 }
+else{
 
 
-catch(error){
-
-
-console.error(
-"送出錯誤:",
-error
-);
-
-
-
-alert(
-"訂單送出失敗，請檢查網路或 API"
-);
-
+alert(data.message);
 
 }
 
@@ -416,4 +471,4 @@ alert(
 
 
 
-window.submitOrder = submitOrder;
+loadStore();
