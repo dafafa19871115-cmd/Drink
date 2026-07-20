@@ -4,7 +4,7 @@ const API_URL =
 
 
 
-let oldCount=0;
+let oldOrders=[];
 
 
 
@@ -21,30 +21,31 @@ let data = await response.json();
 let box=document.getElementById("orders");
 
 
+
 box.innerHTML="";
-
-
-
-if(data.length > oldCount){
-
-
-document.getElementById("ding").play();
-
-
-}
-
-
-oldCount=data.length;
 
 
 
 data.forEach(order=>{
 
 
+let isNew =
+!oldOrders.some(
+x=>x.orderId===order.orderId
+);
+
+
+
 box.innerHTML += `
 
 
-<div class="order">
+<div class="order ${isNew ? "new-order":""}">
+
+
+${isNew ? 
+"<span class='badge'>🔔 新訂單</span>"
+:""}
+
 
 
 <h2>
@@ -63,14 +64,18 @@ box.innerHTML += `
 
 <p>
 
-數量：${order.qty}
+數量：
+
+${order.qty}
 
 </p>
 
 
 <p>
 
-金額：${order.total} 元
+金額：
+
+${order.total} 元
 
 </p>
 
@@ -107,12 +112,35 @@ onclick="updateStatus('${order.orderId}','完成')">
 </div>
 
 
-
 `;
 
 
 
 });
+
+
+
+// 有新訂單
+
+if(data.length > oldOrders.length){
+
+
+let audio =
+document.getElementById("ding");
+
+
+audio.currentTime=0;
+
+
+audio.play();
+
+
+}
+
+
+
+oldOrders=data;
+
 
 
 }
@@ -138,7 +166,6 @@ status:status
 
 })
 
-
 });
 
 
@@ -151,7 +178,7 @@ loadOrders();
 
 
 
-setInterval(loadOrders,5000);
+setInterval(loadOrders,3000);
 
 
 loadOrders();
