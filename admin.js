@@ -4,11 +4,21 @@ const API_URL =
 
 
 
-let oldOrders=[];
+let oldOrders = [];
+
+let firstLoad = true;
 
 
+
+
+// =====================
+// 讀取訂單
+// =====================
 
 async function loadOrders(){
+
+
+try{
 
 
 let response = await fetch(API_URL);
@@ -18,7 +28,8 @@ let data = await response.json();
 
 
 
-let box=document.getElementById("orders");
+let box =
+document.getElementById("orders");
 
 
 
@@ -30,8 +41,13 @@ data.forEach(order=>{
 
 
 let isNew =
+
+!firstLoad &&
+
 !oldOrders.some(
-x=>x.orderId===order.orderId
+
+x=>x.orderId === order.orderId
+
 );
 
 
@@ -42,9 +58,15 @@ box.innerHTML += `
 <div class="order ${isNew ? "new-order":""}">
 
 
-${isNew ? 
+${isNew ?
+
 "<span class='badge'>🔔 新訂單</span>"
-:""}
+
+:
+
+""
+
+}
 
 
 
@@ -55,11 +77,13 @@ ${isNew ?
 </h2>
 
 
+
 <p>
 
 🥤 ${order.product}
 
 </p>
+
 
 
 <p>
@@ -71,6 +95,7 @@ ${order.qty}
 </p>
 
 
+
 <p>
 
 金額：
@@ -78,6 +103,7 @@ ${order.qty}
 ${order.total} 元
 
 </p>
+
 
 
 <p>
@@ -109,6 +135,7 @@ onclick="updateStatus('${order.orderId}','完成')">
 </button>
 
 
+
 </div>
 
 
@@ -120,51 +147,99 @@ onclick="updateStatus('${order.orderId}','完成')">
 
 
 
-// 有新訂單
 
-if(data.length > oldOrders.length){
+// 新訂單提示音
+
+if(!firstLoad && data.length > oldOrders.length){
 
 
 let audio =
 document.getElementById("ding");
 
 
-audio.currentTime=0;
+if(audio){
 
 
-audio.play();
+audio.currentTime = 0;
+
+
+audio.play()
+.catch(()=>{});
+
+
+}
 
 
 }
 
 
 
-oldOrders=data;
 
+oldOrders = data;
+
+
+firstLoad = false;
+
+
+
+}
+
+catch(error){
+
+
+console.error(
+"讀取訂單錯誤:",
+error
+);
+
+
+}
 
 
 }
 
 
 
+
+
+
+
+// =====================
+// 修改訂單狀態
+// =====================
 
 async function updateStatus(id,status){
 
+
+
+try{
 
 
 await fetch(API_URL,{
 
 method:"POST",
 
+headers:{
+
+"Content-Type":"text/plain"
+
+},
+
+
 body:JSON.stringify({
 
-action:"update",
+
+type:"update",
+
 
 orderId:id,
 
+
 status:status
 
+
 })
+
 
 });
 
@@ -173,12 +248,36 @@ status:status
 loadOrders();
 
 
+
+}
+
+catch(error){
+
+
+console.error(
+"更新狀態錯誤:",
+error
+);
+
+
+}
+
+
+
 }
 
 
 
 
-setInterval(loadOrders,3000);
+
+
+// 每3秒更新
+
+setInterval(
+loadOrders,
+3000
+);
+
 
 
 loadOrders();
