@@ -1,6 +1,8 @@
 const API_URL =
 "https://script.google.com/macros/s/AKfycbxN60Cp5tE9ygEFsP7N6CLp3cxZq4bVk2ywebHLT87jjfnbSOlgvgiG8PXf7hJ0L2hJ7A/exec";
 
+console.log("新版 Bing Sha app.js 載入");
+
 
 let cart=[];
 
