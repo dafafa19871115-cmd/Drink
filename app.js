@@ -185,12 +185,139 @@ document.getElementById("total")
 
 async function submitOrder(){
 
+console.log("開始送出訂單");
+
+try{
+
 
 if(cart.length===0){
 
 alert("請先選擇飲料");
 
 return;
+
+}
+
+
+
+let productText =
+
+cart.map(item=>{
+
+return item.name+" x "+item.qty;
+
+}).join("、");
+
+
+
+let total =
+
+cart.reduce(
+
+(sum,item)=>
+
+sum+item.price*item.qty,
+
+0
+
+);
+
+
+
+let data={
+
+product:productText,
+
+qty:cart.reduce(
+
+(sum,item)=>
+
+sum+item.qty,
+
+0
+
+),
+
+total:total
+
+};
+
+
+console.log("送出資料",data);
+
+
+
+let response =
+
+await fetch(
+
+API_URL,
+
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"text/plain"
+
+},
+
+body:JSON.stringify(data)
+
+}
+
+);
+
+
+
+console.log("API回應",response);
+
+
+
+let result =
+
+await response.json();
+
+
+
+console.log(result);
+
+
+
+document.getElementById("result").innerHTML=
+
+`
+
+✅ 訂單完成
+
+<br>
+
+訂單編號：
+
+<b>${result.orderId}</b>
+
+`;
+
+
+
+cart=[];
+
+showCart();
+
+
+}
+
+catch(error){
+
+
+console.error(error);
+
+
+alert("送出失敗");
+
+}
+
 
 }
 
