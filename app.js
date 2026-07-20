@@ -42,7 +42,6 @@ price:50
 
 async function loadStore(){
 
-
 let res =
 await fetch(
 API_URL+"?type=settings"
