@@ -4,7 +4,7 @@ console.log("Bing Sha app.js 已載入");
 // Google Apps Script API
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbyGknz34w24bziAVmbbQdiixO0Q9TRti22hLR6C68S5PYMj3NeI0vesMgN_dxQMuWHM/exec";
+"https://script.google.com/macros/s/AKfycbyAuzI3V-43ZAQqFu2yH7jm6vpzVfxd1adStiCZsPEHfvWGL3YlVb7gVySAWty2_8XIDw/exec";
 
 
 
