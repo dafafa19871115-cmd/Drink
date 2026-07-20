@@ -23,12 +23,14 @@
 
 
 
+
 <div id="storeStatus"
-class="notice">
+class="notice status">
 
 檢查營業狀態中...
 
 </div>
+
 
 
 
@@ -37,6 +39,7 @@ class="notice"
 style="display:none">
 
 </div>
+
 
 
 
@@ -50,13 +53,13 @@ style="display:none">
 
 
 
-
 <h2>
 🛒 購物車
 </h2>
 
 
 <div id="cart"></div>
+
 
 
 
@@ -68,11 +71,14 @@ style="display:none">
 
 
 
+
 <button
 
 id="submitBtn"
 
-onclick="submitOrder()">
+onclick="submitOrder()"
+
+disabled>
 
 送出訂單
 
@@ -84,8 +90,11 @@ onclick="submitOrder()">
 <p id="result"></p>
 
 
-<script src="app.js?v=2"></script>
+
+
+<script src="app.js?v=3"></script>
+
 
 </body>
-  
+
 </html>
