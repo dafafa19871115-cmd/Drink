@@ -1,7 +1,8 @@
 const API_URL =
 "https://script.google.com/macros/s/AKfycbxN60Cp5tE9ygEFsP7N6CLp3cxZq4bVk2ywebHLT87jjfnbSOlgvgiG8PXf7hJ0L2hJ7A/exec";
 
-console.log("新版 Bing Sha app.js 載入");
+
+console.log("Bing Sha app.js 載入");
 
 
 let cart=[];
@@ -33,8 +34,9 @@ price:50
 
 
 
+
 // =====================
-// 取得台灣時間
+// 台灣時間
 // =====================
 
 function getTaiwanTime(){
@@ -54,25 +56,31 @@ timeZone:"Asia/Taipei"
 
 
 // =====================
-// 讀取設定
+// 讀取店家設定
 // =====================
 
 async function loadStore(){
 
+
 try{
 
 
-let res =
+let response =
 await fetch(
 API_URL+"?type=settings"
 );
 
 
+
 let settings =
-await res.json();
+await response.json();
 
 
-console.log("目前設定:",settings);
+
+console.log(
+"店家設定:",
+settings
+);
 
 
 
@@ -82,6 +90,7 @@ document.getElementById(
 );
 
 
+
 let notice =
 document.getElementById(
 "announcement"
@@ -89,23 +98,30 @@ document.getElementById(
 
 
 
+
 // 公告
 
 if(settings["公告"]){
 
+
 notice.style.display="block";
+
 
 notice.innerHTML=
 "📢 "
 +
 settings["公告"];
 
+
 }
 else{
 
+
 notice.style.display="none";
 
+
 }
+
 
 
 
@@ -113,10 +129,16 @@ notice.style.display="none";
 
 if(settings["測試模式"]==="ON"){
 
+
 status.innerHTML=
 "🟢 測試營業中";
 
+
+enableOrder();
+
+
 return;
+
 
 }
 
@@ -137,12 +159,13 @@ disableOrder();
 
 return;
 
+
 }
 
 
 
 
-// 接單設定
+// 暫停接單
 
 if(settings["接受訂單"]==="OFF"){
 
@@ -156,19 +179,19 @@ disableOrder();
 
 return;
 
+
 }
 
 
 
 
-// 台灣時間
 
 let now =
 getTaiwanTime();
 
 
 
-let currentTime =
+let time =
 now.getHours()
 .toString()
 .padStart(2,"0")
@@ -181,13 +204,13 @@ now.getMinutes()
 
 
 
-let openTime =
+let open =
 settings["開店時間"]
 ||
 "00:00";
 
 
-let closeTime =
+let close =
 settings["打烊時間"]
 ||
 "23:59";
@@ -195,35 +218,31 @@ settings["打烊時間"]
 
 
 console.log(
-"現在時間:",
-currentTime,
+"時間:",
+time,
 "開店:",
-openTime,
+open,
 "打烊:",
-closeTime
+close
 );
 
 
 
 
-// 營業時間判斷
 
-let open =
-false;
+let isOpen=false;
 
 
 
-if(openTime <= closeTime){
+if(open <= close){
 
-
-// 一般時間
 
 if(
-currentTime >= openTime &&
-currentTime <= closeTime
+time>=open &&
+time<=close
 ){
 
-open=true;
+isOpen=true;
 
 }
 
@@ -232,14 +251,12 @@ open=true;
 else{
 
 
-// 跨午夜
-
 if(
-currentTime >= openTime ||
-currentTime <= closeTime
+time>=open ||
+time<=close
 ){
 
-open=true;
+isOpen=true;
 
 }
 
@@ -249,7 +266,7 @@ open=true;
 
 
 
-if(open){
+if(isOpen){
 
 
 status.innerHTML=
@@ -273,25 +290,24 @@ disableOrder();
 }
 
 
-
 }
+
 catch(error){
 
+
 console.error(
-"讀取設定錯誤:",
+"讀取設定錯誤",
 error
 );
 
-}
 
 }
 
+}
 
 
 
-// =====================
-// 啟用接單
-// =====================
+
 
 function enableOrder(){
 
@@ -300,6 +316,7 @@ let btn =
 document.getElementById(
 "submitBtn"
 );
+
 
 
 if(btn){
@@ -316,9 +333,6 @@ btn.innerHTML=
 
 
 
-// =====================
-// 停止接單
-// =====================
 
 function disableOrder(){
 
@@ -327,6 +341,7 @@ let btn =
 document.getElementById(
 "submitBtn"
 );
+
 
 
 if(btn){
@@ -344,17 +359,13 @@ btn.innerHTML=
 
 
 
-
-
-
 // =====================
-// 顯示商品
+// 商品顯示
 // =====================
+
 
 let menu =
-document.getElementById(
-"menu"
-);
+document.getElementById("menu");
 
 
 
@@ -367,10 +378,14 @@ menu.innerHTML += `
 <div class="card">
 
 
-<h3>${p.name}</h3>
+<h3>
+${p.name}
+</h3>
 
 
-<p>${p.price} 元</p>
+<p>
+${p.price} 元
+</p>
 
 
 
@@ -395,12 +410,17 @@ menu.innerHTML += `
 
 
 
+// =====================
+// 加入購物車
+// =====================
+
 
 function addCart(i){
 
 
 let item =
 products[i];
+
 
 
 let exist =
@@ -412,7 +432,9 @@ x=>x.name===item.name
 
 if(exist){
 
+
 exist.qty++;
+
 
 }
 else{
@@ -444,63 +466,70 @@ showCart();
 
 
 
+// =====================
+// 顯示購物車
+// =====================
+
+
 function showCart(){
 
 
 let box =
-document.getElementById(
-"cart"
-);
+document.getElementById("cart");
+
 
 
 box.innerHTML="";
+
 
 
 let total=0;
 
 
 
-cart.forEach(x=>{
+cart.forEach(item=>{
 
 
 box.innerHTML += `
 
+
 <p>
 
-${x.name}
+${item.name}
 
 ×
 
-${x.qty}
+${item.qty}
 
 =
 
-${x.price*x.qty}
+${item.price * item.qty}
 
 元
 
 </p>
 
+
 `;
 
 
+
 total +=
-x.price*x.qty;
+item.price * item.qty;
 
 
 });
 
 
 
-document.getElementById(
-"total"
-)
-.innerHTML=
+document.getElementById("total")
+.innerHTML =
 "總金額："
 +
 total
 +
 " 元";
+
 
 
 }
@@ -511,7 +540,13 @@ total
 
 
 
+// =====================
+// 送出訂單
+// =====================
+
+
 async function submitOrder(){
+
 
 
 if(cart.length===0){
@@ -524,112 +559,261 @@ alert(
 
 return;
 
+
 }
 
 
 
+
+
 let product =
-cart.map(x=>
+cart.map(item=>{
 
-x.name+" x "+x.qty
 
-)
+return (
+
+item.name
++
+" x "
++
+item.qty
+
+);
+
+
+})
 .join("、");
+
+
+
 
 
 
 let qty =
 cart.reduce(
-(a,b)=>a+b.qty,
+
+(sum,item)=>
+
+sum + item.qty,
+
 0
+
 );
+
+
+
 
 
 
 let total =
 cart.reduce(
-(a,b)=>a+b.price*b.qty,
+
+(sum,item)=>
+
+sum + item.price * item.qty,
+
 0
+
 );
+
+
+
+
+
+
+let orderData={
+
+
+product:product,
+
+
+qty:qty,
+
+
+total:total
+
+
+};
+
+
+
+
+
+console.log(
+"送出資料:",
+orderData
+);
+
+
 
 
 
 try{
 
 
-let res =
+let response =
 await fetch(API_URL,{
+
 
 method:"POST",
 
+
+mode:"cors",
+
+
 headers:{
 
-"Content-Type":"text/plain"
+
+"Content-Type":
+"text/plain;charset=utf-8"
+
 
 },
 
-body:JSON.stringify({
 
-product,
+body:
+JSON.stringify(orderData)
 
-qty,
-
-total
-
-})
 
 });
 
 
 
-let data =
-await res.json();
+
+
+
+let text =
+await response.text();
+
+
+
+console.log(
+"API回覆:",
+text
+);
+
+
+
+
+
+
+let data;
+
+
+
+try{
+
+
+data =
+JSON.parse(text);
+
+
+}
+
+catch(e){
+
+
+alert(
+"API格式錯誤\n\n"
++
+text
+);
+
+
+return;
+
+
+}
+
+
+
+
 
 
 
 if(data.success){
 
 
-document.getElementById(
-"result"
-)
-.innerHTML=
-"✅ 訂單完成<br>訂單編號："
-+
-data.orderId;
+
+document.getElementById("result")
+.innerHTML =
+
+
+`
+
+✅ 訂單完成
+
+<br>
+
+訂單編號：
+
+<b>${data.orderId}</b>
+
+`;
+
+
 
 
 
 cart=[];
 
+
 showCart();
 
 
+
+
+
 }
+
 else{
 
 
+
 alert(
+
+"訂單失敗："
+
++
+
+(
 data.error ||
-"送出失敗"
+"未知錯誤"
+
+)
+
 );
 
 
+
 }
 
 
+
+
+
 }
+
 catch(error){
 
 
-console.error(error);
 
-alert(
-"送出失敗"
+console.error(
+"送單錯誤:",
+error
 );
 
 
-}
+
+alert(
+
+"送出失敗："
+
++
+
+error.message
+
+);
 
 
 
@@ -637,6 +821,15 @@ alert(
 
 
 
+}
+
+
+
+
+
+// =====================
+// 啟動
+// =====================
 
 
 loadStore();
