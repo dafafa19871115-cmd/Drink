@@ -264,6 +264,7 @@ document.getElementById("result")
 .innerHTML =
 
 `
+
 ✅ 訂單完成
 
 <br>
@@ -273,7 +274,6 @@ document.getElementById("result")
 <b>${result.orderId}</b>
 
 `;
-
 
 
 cart=[];
