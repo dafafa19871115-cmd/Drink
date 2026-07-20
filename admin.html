@@ -1,0 +1,205 @@
+const API_URL =
+"https://script.google.com/macros/s/AKfycbzeHK8T0UZ2mvNC2-0EiPItOPf-RY8LeUCP52QVRkncE3hktAcvB707ZWBTOPbqxXUNmA/exec";
+
+
+
+async function loadOrders(){
+
+
+let res =
+await fetch(API_URL);
+
+
+
+let orders =
+await res.json();
+
+
+
+let box =
+document.getElementById("orders");
+
+
+box.innerHTML="";
+
+
+
+let today =
+new Date()
+.toISOString()
+.slice(0,10);
+
+
+
+let todayOrders =
+orders.filter(
+
+o=>o.date===today
+
+);
+
+
+
+todayOrders.reverse()
+.forEach(order=>{
+
+
+box.innerHTML += `
+
+<div class="order">
+
+
+<h3>
+
+${order.orderId}
+
+</h3>
+
+
+<p>
+${order.product}
+</p>
+
+
+<p>
+金額：
+${order.total} 元
+</p>
+
+
+<p>
+
+狀態：
+
+<select>
+
+<option>
+${order.status}
+</option>
+
+<option>
+待製作
+</option>
+
+<option>
+製作中
+</option>
+
+<option>
+完成
+</option>
+
+</select>
+
+
+</p>
+
+
+</div>
+
+`;
+
+
+
+});
+
+
+
+showHot(todayOrders);
+
+
+}
+
+
+
+
+function showHot(orders){
+
+
+let count={};
+
+
+
+orders.forEach(order=>{
+
+
+let items =
+order.product.split("、");
+
+
+
+items.forEach(item=>{
+
+
+let name =
+item.split(" x ")[0];
+
+
+let qty =
+Number(
+item.split(" x ")[1]
+);
+
+
+
+count[name]
+=
+(count[name]||0)
++
+qty;
+
+
+});
+
+
+});
+
+
+
+let box =
+document.getElementById("hot");
+
+
+box.innerHTML="";
+
+
+
+Object.entries(count)
+
+.sort((a,b)=>b[1]-a[1])
+
+.forEach((item,index)=>{
+
+
+box.innerHTML +=`
+
+<p>
+
+${index+1}️⃣
+
+${item[0]}
+
+${item[1]} 杯
+
+</p>
+
+`;
+
+
+});
+
+
+}
+
+
+
+loadOrders();
+
+
+setInterval(
+
+loadOrders,
+
+10000
+
+);
