@@ -291,10 +291,20 @@ loadOrders();
 function updateReport(data){
 
 
+let now = new Date();
+
+
 let today =
-new Date()
-.toISOString()
-.substring(0,10);
+
+now.getFullYear()
++
+"-"
++
+String(now.getMonth()+1).padStart(2,"0")
++
+"-"
++
+String(now.getDate()).padStart(2,"0");
 
 
 
@@ -315,7 +325,9 @@ let done = 0;
 data.forEach(order=>{
 
 
-if(order.time){
+// 只計算今天
+
+if(order.date === today){
 
 
 orders++;
@@ -328,25 +340,28 @@ sales += Number(order.total);
 
 
 
-if(order.status=="待製作"){
+if(order.status === "待製作"){
 
 pending++;
 
 }
 
 
-if(order.status=="製作中"){
+
+if(order.status === "製作中"){
 
 making++;
 
 }
 
 
-if(order.status=="完成"){
+
+if(order.status === "完成"){
 
 done++;
 
 }
+
 
 
 }
@@ -357,41 +372,34 @@ done++;
 
 
 
-
-
 document.getElementById("reportDate")
 .innerHTML = today;
-
 
 
 document.getElementById("reportOrders")
 .innerHTML = orders;
 
 
-
 document.getElementById("reportCups")
 .innerHTML = cups;
-
 
 
 document.getElementById("reportSales")
 .innerHTML = sales;
 
 
-
 document.getElementById("reportPending")
 .innerHTML = pending;
-
 
 
 document.getElementById("reportMaking")
 .innerHTML = making;
 
 
-
 document.getElementById("reportDone")
 .innerHTML = done;
 
 
-
 }
+
+
