@@ -52,6 +52,8 @@ API_URL+"?type=settings"
 let settings =
 await res.json();
 
+console.log("目前設定:", settings);
+
 
 
 let status =
