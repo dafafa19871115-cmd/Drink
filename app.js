@@ -496,6 +496,7 @@ let menu =
 document.getElementById("menu");
 
 
+if(menu){
 
 products.forEach((p,i)=>{
 
@@ -506,15 +507,10 @@ menu.innerHTML += `
 <div class="card">
 
 
-<h3>
-${p.name}
-</h3>
+<h3>${p.name}</h3>
 
 
-<p>
-${p.price} 元
-</p>
-
+<p>${p.price} 元</p>
 
 
 <button onclick="addCart(${i})">
@@ -530,8 +526,15 @@ ${p.price} 元
 `;
 
 
-
 });
+
+
+}
+else{
+
+console.log("找不到 menu");
+
+}
 
 
 
@@ -963,7 +966,7 @@ window.onload = function(){
 
 console.log("開始讀取店家設定");
 
+showCart();
+
+
 loadStore();
-
-};
-
