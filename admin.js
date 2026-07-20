@@ -1,33 +1,203 @@
 const API_URL =
-"https://script.google.com/macros/s/AKfycbyAuzI3V-43ZAQqFu2yH7jm6vpzVfxd1adStiCZsPEHfvWGL3YlVb7gVySAWty2_8XIDw/exec";
+"https://script.google.com/macros/s/AKfycbzoQK8CDdnOsfjytLWq5WoWguIEJ6Q_XYg2kssNYbcZr6gVz3wIdsc576yLYE3U7YKs6Q/exec";
 
 
-let oldOrders = [];
+let oldOrders=[];
 
-let firstLoad = true;
+let firstLoad=true;
+
+let refreshTime=3000;
+
 
 
 // =====================
-// 取得今天日期
+// 讀取設定
 // =====================
 
-function getToday(){
+async function loadSettings(){
 
-    let now = new Date();
 
-    return (
-        now.getFullYear()
-        +
-        "-"
-        +
-        String(now.getMonth()+1).padStart(2,"0")
-        +
-        "-"
-        +
-        String(now.getDate()).padStart(2,"0")
-    );
+try{
+
+
+let res =
+await fetch(
+API_URL+"?type=settings"
+);
+
+
+
+let settings =
+await res.json();
+
+
+
+checkBusinessStatus(settings);
+
+
+
+if(settings["自動刷新秒數"]){
+
+
+refreshTime =
+Number(settings["自動刷新秒數"])
+*1000;
+
 
 }
+
+
+
+if(settings["接單提示音"]==="OFF"){
+
+
+let audio =
+document.getElementById("ding");
+
+
+if(audio){
+
+audio.remove();
+
+}
+
+
+}
+
+
+
+}
+catch(err){
+
+console.log(
+"設定讀取失敗",
+err
+);
+
+}
+
+
+}
+
+
+
+
+
+
+
+// =====================
+// 營業狀態
+// =====================
+
+function checkBusinessStatus(settings){
+
+
+
+let box =
+document.getElementById(
+"businessStatus"
+);
+
+
+
+if(!box)
+return;
+
+
+
+let now =
+new Date();
+
+
+
+let time =
+now.getHours()
+.toString()
+.padStart(2,"0")
++
+":"
++
+now.getMinutes()
+.toString()
+.padStart(2,"0");
+
+
+
+
+if(settings["店休"]==="ON"){
+
+
+box.innerHTML=
+"🔴 今日店休";
+
+
+box.className=
+"status close";
+
+
+return;
+
+
+}
+
+
+
+
+if(settings["接受訂單"]==="OFF"){
+
+
+box.innerHTML=
+"🟠 暫停接單";
+
+
+box.className=
+"status close";
+
+
+return;
+
+
+}
+
+
+
+if(
+time >= settings["開店時間"]
+&&
+time <= settings["打烊時間"]
+){
+
+
+box.innerHTML=
+"🟢 目前營業中";
+
+
+box.className=
+"status open";
+
+
+}
+else{
+
+
+box.innerHTML=
+"🔴 目前休息中";
+
+
+box.className=
+"status close";
+
+
+}
+
+
+
+}
+
+
+
+
+
 
 
 
@@ -41,20 +211,64 @@ async function loadOrders(){
 try{
 
 
-let response = await fetch(API_URL);
+let res =
+await fetch(API_URL);
 
 
-let data = await response.json();
+
+let data =
+await res.json();
 
 
-// 更新今日報表
+
+// 最新訂單在前
+
+data.reverse();
+
+
+
+renderOrders(data);
+
 
 updateReport(data);
 
 
 
+}
+
+catch(err){
+
+
+console.log(
+"訂單讀取錯誤",
+err
+);
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+// =====================
+// 顯示訂單
+// =====================
+
+function renderOrders(data){
+
+
+
 let box =
-document.getElementById("orders");
+document.getElementById(
+"orders"
+);
+
 
 
 box.innerHTML="";
@@ -65,32 +279,25 @@ data.forEach(order=>{
 
 
 let isNew =
-
-!firstLoad &&
-
+!firstLoad
+&&
 !oldOrders.some(
-
-x=>x.orderId === order.orderId
-
+x=>x.orderId===order.orderId
 );
+
 
 
 
 box.innerHTML += `
 
 
-<div class="order ${isNew ? "new-order":""}">
+<div class="order ${isNew?"new-order":""}">
 
 
-${isNew ?
-
+${isNew?
 "<span class='badge'>🔔 新訂單</span>"
-
 :
-
-""
-
-}
+""}
 
 
 
@@ -122,9 +329,7 @@ ${order.qty}
 
 <p>
 
-金額：
-
-${order.total} 元
+💰 ${order.total} 元
 
 </p>
 
@@ -134,9 +339,14 @@ ${order.total} 元
 
 狀態：
 
-<b>${order.status}</b>
+<b>
+
+${order.status}
+
+</b>
 
 </p>
+
 
 
 
@@ -144,9 +354,10 @@ ${order.total} 元
 
 onclick="updateStatus('${order.orderId}','製作中')">
 
-開始製作
+🔥 開始製作
 
 </button>
+
 
 
 
@@ -154,10 +365,9 @@ onclick="updateStatus('${order.orderId}','製作中')">
 
 onclick="updateStatus('${order.orderId}','完成')">
 
-完成
+✅ 完成
 
 </button>
-
 
 
 </div>
@@ -172,19 +382,28 @@ onclick="updateStatus('${order.orderId}','完成')">
 
 
 
-// 新訂單提示音
 
-if(!firstLoad && data.length > oldOrders.length){
+// 新單提示音
+
+if(
+!firstLoad
+&&
+data.length>oldOrders.length
+){
+
 
 
 let audio =
-document.getElementById("ding");
+document.getElementById(
+"ding"
+);
+
 
 
 if(audio){
 
 
-audio.currentTime = 0;
+audio.currentTime=0;
 
 
 audio.play()
@@ -198,46 +417,26 @@ audio.play()
 
 
 
-oldOrders = data;
+oldOrders=data;
 
-
-firstLoad = false;
-
-
-
-}
-
-
-catch(error){
-
-
-console.error(
-
-"讀取訂單錯誤:",
-
-error
-
-);
-
-
-}
+firstLoad=false;
 
 
 
 }
+
+
 
 
 
 
 
 // =====================
-// 修改訂單狀態
+// 修改狀態
 // =====================
 
 async function updateStatus(id,status){
 
-
-try{
 
 
 await fetch(API_URL,{
@@ -253,11 +452,13 @@ headers:{
 
 body:JSON.stringify({
 
+
 type:"update",
 
 orderId:id,
 
 status:status
+
 
 })
 
@@ -273,19 +474,54 @@ loadOrders();
 }
 
 
-catch(error){
 
 
-console.error(
 
-"更新狀態錯誤:",
 
-error
 
+// =====================
+// 指定日期報表
+// =====================
+
+async function searchReport(){
+
+
+
+let date =
+document.getElementById(
+"reportDateInput"
+).value;
+
+
+
+if(!date){
+
+alert(
+"請選擇日期"
+);
+
+return;
+
+}
+
+
+
+let res =
+await fetch(
+API_URL+
+"?type=report&date="
++
+date
 );
 
 
-}
+
+let data =
+await res.json();
+
+
+
+showReport(data);
 
 
 }
@@ -295,72 +531,28 @@ error
 
 
 
-
-// =====================
-// 今日報表
-// =====================
 
 function updateReport(data){
 
 
 
-let today = getToday();
+let today =
+new Date()
+.toISOString()
+.substring(0,10);
 
 
 
-let orders = 0;
-
-let cups = 0;
-
-let sales = 0;
-
-let pending = 0;
-
-let making = 0;
-
-let done = 0;
+let result=[];
 
 
 
-data.forEach(order=>{
+data.forEach(x=>{
 
 
-if(order.date === today){
+if(x.date===today){
 
-
-orders++;
-
-
-cups += Number(order.qty);
-
-
-sales += Number(order.total);
-
-
-
-if(order.status === "待製作"){
-
-pending++;
-
-}
-
-
-
-if(order.status === "製作中"){
-
-making++;
-
-}
-
-
-
-if(order.status === "完成"){
-
-done++;
-
-}
-
-
+result.push(x);
 
 }
 
@@ -369,30 +561,87 @@ done++;
 
 
 
+showReportData(result);
 
-let ids = [
 
-"reportDate",
-
-"reportOrders",
-
-"reportCups",
-
-"reportSales",
-
-"reportPending",
-
-"reportMaking",
-
-"reportDone"
-
-];
+}
 
 
 
-let values = [
 
-today,
+
+
+
+function showReport(data){
+
+
+document.getElementById(
+"reportOrders"
+).innerHTML=data.orders || 0;
+
+
+document.getElementById(
+"reportCups"
+).innerHTML=data.cups || 0;
+
+
+document.getElementById(
+"reportSales"
+).innerHTML=data.sales || 0;
+
+
+}
+
+
+
+
+
+
+
+function showReportData(data){
+
+
+let orders=0;
+
+let cups=0;
+
+let sales=0;
+
+let pending=0;
+
+let making=0;
+
+let done=0;
+
+
+
+data.forEach(x=>{
+
+
+orders++;
+
+cups+=Number(x.qty);
+
+sales+=Number(x.total);
+
+
+if(x.status==="待製作")
+pending++;
+
+
+if(x.status==="製作中")
+making++;
+
+
+if(x.status==="完成")
+done++;
+
+
+});
+
+
+
+showReport({
 
 orders,
 
@@ -406,24 +655,8 @@ making,
 
 done
 
-];
-
-
-
-ids.forEach((id,index)=>{
-
-
-let el = document.getElementById(id);
-
-
-if(el){
-
-el.innerHTML = values[index];
-
-}
-
-
 });
+
 
 
 }
@@ -441,23 +674,9 @@ el.innerHTML = values[index];
 async function checkoutToday(){
 
 
-let confirmBox =
 
-confirm("確定要進行今日結帳嗎？");
-
-
-if(!confirmBox){
-
-return;
-
-}
-
-
-
-try{
-
-
-let response = await fetch(API_URL,{
+let res =
+await fetch(API_URL,{
 
 method:"POST",
 
@@ -479,54 +698,47 @@ type:"checkout"
 
 
 
-let result = await response.json();
+let data =
+await res.json();
 
 
 
-alert(result.message);
-
-
-
-}
-
-
-
-catch(error){
-
-
-console.error(
-
-"結帳錯誤:",
-
-error
-
+alert(
+data.message
+||
+"完成"
 );
 
 
-alert("結帳失敗");
-
-
-}
-
-
 }
 
 
 
 
 
-// =====================
-// 每3秒更新
-// =====================
+
+
+// 初始化
+
+
+loadSettings();
+
+loadOrders();
+
+
+
+// 每3秒刷新
 
 setInterval(
 
-loadOrders,
+()=>{
+
+loadOrders();
+
+loadSettings();
+
+},
 
 3000
 
 );
-
-
-
-loadOrders();
