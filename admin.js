@@ -1,14 +1,33 @@
 const API_URL =
-
-"https://script.google.com/macros/s/AKfycbxo3Gda0zUuI8gkaHSqjJza5KaEn0CILxfjdONDkpjoIoE2cLGEojEwbTuX1kQfh3FKwg/exec";
-
+"https://script.google.com/macros/s/AKfycbxo3Gda0zUuI8gkaHSqjJaza5KaEn0CILxfjdONDkpjoIoE2cLGEojEwbTuX1kQfh3FKwg/exec";
 
 
 let oldOrders = [];
 
 let firstLoad = true;
-let todayReport = [];
 
+
+// =====================
+// 取得今天日期
+// =====================
+
+function getToday(){
+
+    let now = new Date();
+
+    return (
+        now.getFullYear()
+        +
+        "-"
+        +
+        String(now.getMonth()+1).padStart(2,"0")
+        +
+        "-"
+        +
+        String(now.getDate()).padStart(2,"0")
+    );
+
+}
 
 
 
@@ -26,13 +45,16 @@ let response = await fetch(API_URL);
 
 
 let data = await response.json();
+
+
+// 更新今日報表
+
 updateReport(data);
 
 
 
 let box =
 document.getElementById("orders");
-
 
 
 box.innerHTML="";
@@ -176,7 +198,6 @@ audio.play()
 
 
 
-
 oldOrders = data;
 
 
@@ -186,21 +207,24 @@ firstLoad = false;
 
 }
 
+
 catch(error){
 
 
 console.error(
+
 "讀取訂單錯誤:",
+
 error
+
 );
 
 
 }
 
 
+
 }
-
-
 
 
 
@@ -211,7 +235,6 @@ error
 // =====================
 
 async function updateStatus(id,status){
-
 
 
 try{
@@ -230,15 +253,11 @@ headers:{
 
 body:JSON.stringify({
 
-
 type:"update",
-
 
 orderId:id,
 
-
 status:status
-
 
 })
 
@@ -253,36 +272,28 @@ loadOrders();
 
 }
 
+
 catch(error){
 
 
 console.error(
+
 "更新狀態錯誤:",
+
 error
+
 );
 
 
 }
 
 
-
 }
 
 
 
 
 
-
-// 每3秒更新
-
-setInterval(
-loadOrders,
-3000
-);
-
-
-
-loadOrders();
 
 // =====================
 // 今日報表
@@ -291,20 +302,8 @@ loadOrders();
 function updateReport(data){
 
 
-let now = new Date();
 
-
-let today =
-
-now.getFullYear()
-+
-"-"
-+
-String(now.getMonth()+1).padStart(2,"0")
-+
-"-"
-+
-String(now.getDate()).padStart(2,"0");
+let today = getToday();
 
 
 
@@ -325,7 +324,7 @@ let done = 0;
 data.forEach(order=>{
 
 
-// 只計算今天
+// 只統計今天
 
 if(order.date === today){
 
@@ -367,39 +366,86 @@ done++;
 }
 
 
-
 });
 
 
 
-document.getElementById("reportDate")
-.innerHTML = today;
 
 
-document.getElementById("reportOrders")
-.innerHTML = orders;
+let dateBox =
+document.getElementById("reportDate");
 
 
-document.getElementById("reportCups")
-.innerHTML = cups;
+let orderBox =
+document.getElementById("reportOrders");
 
 
-document.getElementById("reportSales")
-.innerHTML = sales;
+let cupsBox =
+document.getElementById("reportCups");
 
 
-document.getElementById("reportPending")
-.innerHTML = pending;
+let salesBox =
+document.getElementById("reportSales");
 
 
-document.getElementById("reportMaking")
-.innerHTML = making;
+let pendingBox =
+document.getElementById("reportPending");
 
 
-document.getElementById("reportDone")
-.innerHTML = done;
+let makingBox =
+document.getElementById("reportMaking");
+
+
+let doneBox =
+document.getElementById("reportDone");
+
+
+
+if(dateBox)
+dateBox.innerHTML = today;
+
+
+if(orderBox)
+orderBox.innerHTML = orders;
+
+
+if(cupsBox)
+cupsBox.innerHTML = cups;
+
+
+if(salesBox)
+salesBox.innerHTML = sales;
+
+
+if(pendingBox)
+pendingBox.innerHTML = pending;
+
+
+if(makingBox)
+makingBox.innerHTML = making;
+
+
+if(doneBox)
+doneBox.innerHTML = done;
+
 
 
 }
 
 
+
+
+
+// 每3秒更新
+
+setInterval(
+
+loadOrders,
+
+3000
+
+);
+
+
+
+loadOrders();
