@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+<meta charset="UTF-8">
+<title>點餐 QR Code</title>
+</head>
+
+<body>
+
+<h2>🧋 掃描 QR Code 點餐</h2>
+
+<img id="qr" width="300">
+
+
+<script>
+
+const orderURL =
+"https://你的GitHub帳號.github.io/drink-order-system/";
+
+
+document.getElementById("qr").src =
+
+"https://api.qrserver.com/v1/create-qr-code/?size=300x300&data="
++
+encodeURIComponent(orderURL);
+
+
+</script>
+
+
+</body>
+
+</html>
