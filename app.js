@@ -1,3 +1,5 @@
+alert("APP JS 有載入");
+
 console.log("Bing Sha app.js 正確載入");
 
 
