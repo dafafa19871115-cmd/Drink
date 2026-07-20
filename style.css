@@ -1,18 +1,21 @@
-body {
+body{
 
 font-family:
 "Microsoft JhengHei",
 Arial,
 sans-serif;
 
+background:#f8f8f8;
+
 padding:15px;
 
-background:#f8f8f8;
+margin:0;
 
 }
 
 
-h1 {
+
+h1{
 
 text-align:center;
 
@@ -20,24 +23,43 @@ text-align:center;
 
 
 
-.card {
+.notice{
 
 background:white;
 
-border-radius:18px;
+padding:15px;
 
-padding:18px;
+border-radius:15px;
 
 margin-bottom:15px;
 
-box-shadow:
-0 3px 10px rgba(0,0,0,0.08);
+text-align:center;
+
+font-size:18px;
 
 }
 
 
 
-button {
+
+.card{
+
+background:white;
+
+padding:18px;
+
+border-radius:18px;
+
+margin-bottom:15px;
+
+box-shadow:
+0 3px 10px rgba(0,0,0,0.1);
+
+}
+
+
+
+button{
 
 width:100%;
 
@@ -45,7 +67,7 @@ padding:14px;
 
 font-size:18px;
 
-border:none;
+border:0;
 
 border-radius:12px;
 
@@ -57,13 +79,11 @@ color:white;
 
 
 
-select {
+#cart p{
 
-width:100%;
+background:white;
 
-padding:12px;
-
-font-size:16px;
+padding:10px;
 
 border-radius:10px;
 
@@ -71,29 +91,25 @@ border-radius:10px;
 
 
 
-#orders {
+.closed{
 
-max-width:500px;
+background:#ffd6d6;
 
-margin:auto;
-
-}
-
-
-
-#hot {
-
-background:white;
-
-padding:15px;
-
-border-radius:15px;
+color:#d00000;
 
 }
 
 
 
-/* 手機 */
+.open{
+
+background:#d8ffd8;
+
+color:#198754;
+
+}
+
+
 
 @media(max-width:600px){
 
@@ -105,16 +121,16 @@ font-size:26px;
 }
 
 
-.card h2{
+.card h3{
 
 font-size:22px;
 
 }
 
 
-p{
+button{
 
-font-size:18px;
+font-size:20px;
 
 }
 
