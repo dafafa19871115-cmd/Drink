@@ -1,5 +1,5 @@
 const API_URL =
-"https://script.google.com/macros/s/AKfycbyGknz34w24bziAVmbbQdiixO0Q9TRti22hLR6C68S5PYMj3NeI0vesMgN_dxQMuWHM/exec";
+"https://script.google.com/macros/s/AKfycbyAuzI3V-43ZAQqFu2yH7jm6vpzVfxd1adStiCZsPEHfvWGL3YlVb7gVySAWty2_8XIDw/exec";
 
 
 let oldOrders = [];
@@ -295,6 +295,7 @@ error
 
 
 
+
 // =====================
 // 今日報表
 // =====================
@@ -323,8 +324,6 @@ let done = 0;
 
 data.forEach(order=>{
 
-
-// 只統計今天
 
 if(order.date === today){
 
@@ -371,63 +370,60 @@ done++;
 
 
 
+let ids = [
 
-let dateBox =
-document.getElementById("reportDate");
+"reportDate",
 
+"reportOrders",
 
-let orderBox =
-document.getElementById("reportOrders");
+"reportCups",
 
+"reportSales",
 
-let cupsBox =
-document.getElementById("reportCups");
+"reportPending",
 
+"reportMaking",
 
-let salesBox =
-document.getElementById("reportSales");
+"reportDone"
 
-
-let pendingBox =
-document.getElementById("reportPending");
-
-
-let makingBox =
-document.getElementById("reportMaking");
-
-
-let doneBox =
-document.getElementById("reportDone");
+];
 
 
 
-if(dateBox)
-dateBox.innerHTML = today;
+let values = [
+
+today,
+
+orders,
+
+cups,
+
+sales,
+
+pending,
+
+making,
+
+done
+
+];
 
 
-if(orderBox)
-orderBox.innerHTML = orders;
+
+ids.forEach((id,index)=>{
 
 
-if(cupsBox)
-cupsBox.innerHTML = cups;
+let el = document.getElementById(id);
 
 
-if(salesBox)
-salesBox.innerHTML = sales;
+if(el){
+
+el.innerHTML = values[index];
+
+}
 
 
-if(pendingBox)
-pendingBox.innerHTML = pending;
-
-
-if(makingBox)
-makingBox.innerHTML = making;
-
-
-if(doneBox)
-doneBox.innerHTML = done;
-
+});
 
 
 }
@@ -436,7 +432,92 @@ doneBox.innerHTML = done;
 
 
 
+
+
+// =====================
+// 今日結帳
+// =====================
+
+async function checkoutToday(){
+
+
+let confirmBox =
+
+confirm("確定要進行今日結帳嗎？");
+
+
+if(!confirmBox){
+
+return;
+
+}
+
+
+
+try{
+
+
+let response = await fetch(API_URL,{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"text/plain"
+
+},
+
+
+body:JSON.stringify({
+
+type:"checkout"
+
+})
+
+
+});
+
+
+
+let result = await response.json();
+
+
+
+alert(result.message);
+
+
+
+}
+
+
+
+catch(error){
+
+
+console.error(
+
+"結帳錯誤:",
+
+error
+
+);
+
+
+alert("結帳失敗");
+
+
+}
+
+
+}
+
+
+
+
+
+// =====================
 // 每3秒更新
+// =====================
 
 setInterval(
 
