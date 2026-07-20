@@ -82,6 +82,134 @@ console.log(
 settings
 );
 
+  let status =
+document.getElementById(
+"storeStatus"
+);
+
+
+let notice =
+document.getElementById(
+"announcement"
+);
+
+
+// 公告
+
+if(settings["公告"]){
+
+notice.style.display="block";
+
+notice.innerHTML =
+"📢 "
++
+settings["公告"];
+
+}
+
+
+// 測試模式
+
+if(settings["測試模式"]==="ON"){
+
+
+status.innerHTML =
+"🟢 測試營業中";
+
+
+enableOrder();
+
+return;
+
+}
+
+
+// 店休
+
+if(settings["店休"]==="ON"){
+
+
+status.innerHTML =
+"🔴 今日店休";
+
+
+disableOrder();
+
+return;
+
+}
+
+
+// 暫停接單
+
+if(settings["接受訂單"]==="OFF"){
+
+
+status.innerHTML =
+"🟠 暫停接單";
+
+
+disableOrder();
+
+return;
+
+}
+
+
+// 營業時間
+
+let now =
+new Date();
+
+
+let current =
+now.getHours()
+.toString()
+.padStart(2,"0")
++
+":"
++
+now.getMinutes()
+.toString()
+.padStart(2,"0");
+
+
+
+let open =
+settings["開店時間"];
+
+
+let close =
+settings["打烊時間"];
+
+
+
+
+if(
+current >= open &&
+current <= close
+){
+
+
+status.innerHTML =
+"🟢 目前營業中";
+
+
+enableOrder();
+
+
+}
+else{
+
+
+status.innerHTML =
+"🔴 目前休息時間";
+
+
+disableOrder();
+
+
+}
 
 
 let status =
@@ -831,7 +959,11 @@ error.message
 // =====================
 
 
+window.onload = function(){
+
+console.log("開始讀取店家設定");
+
 loadStore();
 
-console.log("loadStore 啟動完成");
+};
 
