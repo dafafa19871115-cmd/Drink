@@ -10,6 +10,60 @@ let refreshTime=3000;
 
 
 
+
+// =====================
+// 台灣時間
+// =====================
+
+function getTaiwanTime(){
+
+return new Date(
+new Date().toLocaleString(
+"en-US",
+{
+timeZone:"Asia/Taipei"
+}
+)
+);
+
+}
+
+
+
+function getTaiwanDate(){
+
+let now=getTaiwanTime();
+
+
+return (
+
+now.getFullYear()
+
++
+"-"
+
++
+String(
+now.getMonth()+1
+)
+.padStart(2,"0")
+
++
+"-"
+
++
+String(
+now.getDate()
+)
+.padStart(2,"0")
+
+);
+
+}
+
+
+
+
 // =====================
 // 讀取設定
 // =====================
@@ -32,7 +86,15 @@ await res.json();
 
 
 
+console.log(
+"設定:",
+settings
+);
+
+
+
 checkBusinessStatus(settings);
+
 
 
 
@@ -40,19 +102,23 @@ if(settings["自動刷新秒數"]){
 
 
 refreshTime =
-Number(settings["自動刷新秒數"])
-*1000;
+Number(
+settings["自動刷新秒數"]
+)
+*
+1000;
 
 
 }
-
 
 
 if(settings["接單提示音"]==="OFF"){
 
 
 let audio =
-document.getElementById("ding");
+document.getElementById(
+"ding"
+);
 
 
 if(audio){
@@ -74,11 +140,11 @@ console.log(
 err
 );
 
-}
-
 
 }
 
+
+}
 
 
 
@@ -105,34 +171,12 @@ return;
 
 
 
-let now =
-new Date();
-
-
-
-let time =
-now.getHours()
-.toString()
-.padStart(2,"0")
-+
-":"
-+
-now.getMinutes()
-.toString()
-.padStart(2,"0");
-
-
-
 
 if(settings["店休"]==="ON"){
 
 
 box.innerHTML=
 "🔴 今日店休";
-
-
-box.className=
-"status close";
 
 
 return;
@@ -150,10 +194,6 @@ box.innerHTML=
 "🟠 暫停接單";
 
 
-box.className=
-"status close";
-
-
 return;
 
 
@@ -161,19 +201,91 @@ return;
 
 
 
+
+let now =
+getTaiwanTime();
+
+
+
+let time =
+now.getHours()
+.toString()
+.padStart(2,"0")
++
+":"
++
+now.getMinutes()
+.toString()
+.padStart(2,"0");
+
+
+
+
+let openTime =
+settings["開店時間"]
+||
+"00:00";
+
+
+
+let closeTime =
+settings["打烊時間"]
+||
+"23:59";
+
+
+
+let open=false;
+
+
+
+
+// 一般時間
+
+if(openTime <= closeTime){
+
+
 if(
-time >= settings["開店時間"]
+time>=openTime
 &&
-time <= settings["打烊時間"]
+time<=closeTime
 ){
+
+open=true;
+
+}
+
+
+}
+
+
+// 跨午夜
+
+else{
+
+
+if(
+time>=openTime
+||
+time<=closeTime
+){
+
+open=true;
+
+}
+
+
+}
+
+
+
+
+
+if(open){
 
 
 box.innerHTML=
 "🟢 目前營業中";
-
-
-box.className=
-"status open";
 
 
 }
@@ -184,16 +296,11 @@ box.innerHTML=
 "🔴 目前休息中";
 
 
-box.className=
-"status close";
-
-
 }
 
 
 
 }
-
 
 
 
@@ -221,8 +328,7 @@ await res.json();
 
 
 
-// 最新訂單在前
-
+data =
 data.reverse();
 
 
@@ -248,8 +354,8 @@ err
 }
 
 
-}
 
+}
 
 
 
@@ -259,6 +365,7 @@ err
 // =====================
 // 顯示訂單
 // =====================
+
 
 function renderOrders(data){
 
@@ -271,6 +378,11 @@ document.getElementById(
 
 
 
+if(!box)
+return;
+
+
+
 box.innerHTML="";
 
 
@@ -279,10 +391,16 @@ data.forEach(order=>{
 
 
 let isNew =
+
 !firstLoad
+
 &&
+
 !oldOrders.some(
-x=>x.orderId===order.orderId
+
+x=>
+x.orderId===order.orderId
+
 );
 
 
@@ -295,59 +413,41 @@ box.innerHTML += `
 
 
 ${isNew?
-"<span class='badge'>🔔 新訂單</span>"
-:
-""}
 
+"<span class='badge'>🔔 新訂單</span>"
+
+:
+
+""
+
+}
 
 
 <h2>
-
 🧾 ${order.orderId}
-
 </h2>
 
 
-
 <p>
-
 🥤 ${order.product}
-
 </p>
 
 
-
 <p>
-
 數量：
-
 ${order.qty}
-
 </p>
 
 
-
 <p>
-
 💰 ${order.total} 元
-
 </p>
-
 
 
 <p>
-
 狀態：
-
-<b>
-
-${order.status}
-
-</b>
-
+<b>${order.status}</b>
 </p>
-
-
 
 
 <button class="start"
@@ -357,7 +457,6 @@ onclick="updateStatus('${order.orderId}','製作中')">
 🔥 開始製作
 
 </button>
-
 
 
 
@@ -383,14 +482,11 @@ onclick="updateStatus('${order.orderId}','完成')">
 
 
 
-// 新單提示音
-
 if(
 !firstLoad
 &&
 data.length>oldOrders.length
 ){
-
 
 
 let audio =
@@ -399,9 +495,7 @@ document.getElementById(
 );
 
 
-
 if(audio){
-
 
 audio.currentTime=0;
 
@@ -431,12 +525,15 @@ firstLoad=false;
 
 
 
+
 // =====================
 // 修改狀態
 // =====================
 
 async function updateStatus(id,status){
 
+
+try{
 
 
 await fetch(API_URL,{
@@ -452,13 +549,11 @@ headers:{
 
 body:JSON.stringify({
 
-
 type:"update",
 
 orderId:id,
 
 status:status
-
 
 })
 
@@ -473,55 +568,16 @@ loadOrders();
 
 }
 
+catch(err){
 
 
-
-
-
-
-// =====================
-// 指定日期報表
-// =====================
-
-async function searchReport(){
-
-
-
-let date =
-document.getElementById(
-"reportDateInput"
-).value;
-
-
-
-if(!date){
-
-alert(
-"請選擇日期"
+console.log(
+"修改失敗",
+err
 );
 
-return;
 
 }
-
-
-
-let res =
-await fetch(
-API_URL+
-"?type=report&date="
-+
-date
-);
-
-
-
-let data =
-await res.json();
-
-
-
-showReport(data);
 
 
 }
@@ -530,6 +586,10 @@ showReport(data);
 
 
 
+
+// =====================
+// 今日報表
+// =====================
 
 
 function updateReport(data){
@@ -537,13 +597,11 @@ function updateReport(data){
 
 
 let today =
-new Date()
-.toISOString()
-.substring(0,10);
+getTaiwanDate();
 
 
 
-let result=[];
+let list=[];
 
 
 
@@ -552,7 +610,7 @@ data.forEach(x=>{
 
 if(x.date===today){
 
-result.push(x);
+list.push(x);
 
 }
 
@@ -561,38 +619,10 @@ result.push(x);
 
 
 
-showReportData(result);
+showReportData(list);
 
 
 }
-
-
-
-
-
-
-
-function showReport(data){
-
-
-document.getElementById(
-"reportOrders"
-).innerHTML=data.orders || 0;
-
-
-document.getElementById(
-"reportCups"
-).innerHTML=data.cups || 0;
-
-
-document.getElementById(
-"reportSales"
-).innerHTML=data.sales || 0;
-
-
-}
-
-
 
 
 
@@ -625,6 +655,7 @@ cups+=Number(x.qty);
 sales+=Number(x.total);
 
 
+
 if(x.status==="待製作")
 pending++;
 
@@ -641,22 +672,77 @@ done++;
 
 
 
-showReport({
+document.getElementById("reportOrders").innerHTML=orders;
 
-orders,
+document.getElementById("reportCups").innerHTML=cups;
 
-cups,
+document.getElementById("reportSales").innerHTML=sales;
 
-sales,
 
-pending,
+if(document.getElementById("reportPending"))
+document.getElementById("reportPending").innerHTML=pending;
 
-making,
 
-done
+if(document.getElementById("reportMaking"))
+document.getElementById("reportMaking").innerHTML=making;
 
-});
 
+if(document.getElementById("reportDone"))
+document.getElementById("reportDone").innerHTML=done;
+
+
+}
+
+
+
+
+
+
+// =====================
+// 指定日期報表
+// =====================
+
+
+async function searchReport(){
+
+
+let date =
+document.getElementById(
+"reportDateInput"
+).value;
+
+
+
+if(!date){
+
+alert(
+"請選擇日期"
+);
+
+return;
+
+}
+
+
+
+let res =
+await fetch(
+
+API_URL+
+"?type=report&date="
++
+date
+
+);
+
+
+
+let data =
+await res.json();
+
+
+
+showReportData(data.orders || []);
 
 
 }
@@ -667,12 +753,13 @@ done
 
 
 
+
 // =====================
-// 今日結帳
+// 每日結帳
 // =====================
+
 
 async function checkoutToday(){
-
 
 
 let res =
@@ -693,7 +780,6 @@ type:"checkout"
 
 })
 
-
 });
 
 
@@ -704,9 +790,7 @@ await res.json();
 
 
 alert(
-data.message
-||
-"完成"
+data.message || "完成"
 );
 
 
@@ -718,7 +802,9 @@ data.message
 
 
 
-// 初始化
+// =====================
+// 啟動
+// =====================
 
 
 loadSettings();
@@ -727,18 +813,12 @@ loadOrders();
 
 
 
-// 每3秒刷新
+setInterval(()=>{
 
-setInterval(
-
-()=>{
 
 loadOrders();
 
 loadSettings();
 
-},
 
-3000
-
-);
+},refreshTime);
