@@ -2,13 +2,10 @@ const API_URL =
 "https://script.google.com/macros/s/AKfycbxN60Cp5tE9ygEFsP7N6CLp3cxZq4bVk2ywebHLT87jjfnbSOlgvgiG8PXf7hJ0L2hJ7A/exec";
 
 
-
 let cart=[];
 
 
-
 const products=[
-
 
 {
 name:"綠豆沙",
@@ -30,8 +27,26 @@ name:"隱藏版(百香果風味冰沙)",
 price:50
 }
 
-
 ];
+
+
+
+// =====================
+// 取得台灣時間
+// =====================
+
+function getTaiwanTime(){
+
+return new Date(
+new Date().toLocaleString(
+"en-US",
+{
+timeZone:"Asia/Taipei"
+}
+)
+);
+
+}
 
 
 
@@ -42,6 +57,9 @@ price:50
 
 async function loadStore(){
 
+try{
+
+
 let res =
 await fetch(
 API_URL+"?type=settings"
@@ -51,7 +69,8 @@ API_URL+"?type=settings"
 let settings =
 await res.json();
 
-console.log("目前設定:", settings);
+
+console.log("目前設定:",settings);
 
 
 
@@ -61,7 +80,6 @@ document.getElementById(
 );
 
 
-
 let notice =
 document.getElementById(
 "announcement"
@@ -69,17 +87,27 @@ document.getElementById(
 
 
 
+// 公告
+
 if(settings["公告"]){
 
+notice.style.display="block";
 
 notice.innerHTML=
 "📢 "
 +
 settings["公告"];
 
+}
+else{
+
+notice.style.display="none";
 
 }
 
+
+
+// 測試模式
 
 if(settings["測試模式"]==="ON"){
 
@@ -89,7 +117,12 @@ status.innerHTML=
 return;
 
 }
-  
+
+
+
+
+// 店休
+
 if(settings["店休"]==="ON"){
 
 
@@ -99,12 +132,15 @@ status.innerHTML=
 
 disableOrder();
 
-return;
 
+return;
 
 }
 
 
+
+
+// 接單設定
 
 if(settings["接受訂單"]==="OFF"){
 
@@ -115,19 +151,22 @@ status.innerHTML=
 
 disableOrder();
 
-return;
 
+return;
 
 }
 
 
 
+
+// 台灣時間
+
 let now =
-new Date();
+getTaiwanTime();
 
 
 
-let time =
+let currentTime =
 now.getHours()
 .toString()
 .padStart(2,"0")
@@ -140,15 +179,82 @@ now.getMinutes()
 
 
 
+let openTime =
+settings["開店時間"]
+||
+"00:00";
+
+
+let closeTime =
+settings["打烊時間"]
+||
+"23:59";
+
+
+
+console.log(
+"現在時間:",
+currentTime,
+"開店:",
+openTime,
+"打烊:",
+closeTime
+);
+
+
+
+
+// 營業時間判斷
+
+let open =
+false;
+
+
+
+if(openTime <= closeTime){
+
+
+// 一般時間
+
 if(
-time >= settings["開店時間"]
-&&
-time <= settings["打烊時間"]
+currentTime >= openTime &&
+currentTime <= closeTime
 ){
+
+open=true;
+
+}
+
+
+}
+else{
+
+
+// 跨午夜
+
+if(
+currentTime >= openTime ||
+currentTime <= closeTime
+){
+
+open=true;
+
+}
+
+
+}
+
+
+
+
+if(open){
 
 
 status.innerHTML=
 "🟢 目前營業中";
+
+
+enableOrder();
 
 
 }
@@ -165,12 +271,52 @@ disableOrder();
 }
 
 
+
+}
+catch(error){
+
+console.error(
+"讀取設定錯誤:",
+error
+);
+
+}
+
 }
 
 
 
 
+// =====================
+// 啟用接單
+// =====================
 
+function enableOrder(){
+
+
+let btn =
+document.getElementById(
+"submitBtn"
+);
+
+
+if(btn){
+
+btn.disabled=false;
+
+btn.innerHTML=
+"送出訂單";
+
+}
+
+
+}
+
+
+
+// =====================
+// 停止接單
+// =====================
 
 function disableOrder(){
 
@@ -198,6 +344,7 @@ btn.innerHTML=
 
 
 
+
 // =====================
 // 顯示商品
 // =====================
@@ -218,18 +365,10 @@ menu.innerHTML += `
 <div class="card">
 
 
-<h3>
-
-${p.name}
-
-</h3>
+<h3>${p.name}</h3>
 
 
-<p>
-
-${p.price} 元
-
-</p>
+<p>${p.price} 元</p>
 
 
 
@@ -262,7 +401,6 @@ let item =
 products[i];
 
 
-
 let exist =
 cart.find(
 x=>x.name===item.name
@@ -292,6 +430,7 @@ qty:1
 }
 
 
+
 showCart();
 
 
@@ -310,7 +449,6 @@ let box =
 document.getElementById(
 "cart"
 );
-
 
 
 box.innerHTML="";
@@ -342,7 +480,6 @@ ${x.price*x.qty}
 </p>
 
 `;
-
 
 
 total +=
@@ -385,7 +522,6 @@ alert(
 
 return;
 
-
 }
 
 
@@ -416,6 +552,9 @@ cart.reduce(
 
 
 
+try{
+
+
 let res =
 await fetch(API_URL,{
 
@@ -429,16 +568,13 @@ headers:{
 
 body:JSON.stringify({
 
-
 product,
 
 qty,
 
 total
 
-
 })
-
 
 });
 
@@ -461,6 +597,7 @@ document.getElementById(
 data.orderId;
 
 
+
 cart=[];
 
 showCart();
@@ -470,13 +607,33 @@ showCart();
 else{
 
 
-alert(data.message);
+alert(
+data.error ||
+"送出失敗"
+);
+
+
+}
+
+
+}
+catch(error){
+
+
+console.error(error);
+
+alert(
+"送出失敗"
+);
+
 
 }
 
 
 
 }
+
+
 
 
 
