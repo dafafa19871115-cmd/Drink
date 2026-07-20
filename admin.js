@@ -26,6 +26,7 @@ let response = await fetch(API_URL);
 
 
 let data = await response.json();
+updateReport(data);
 
 
 
@@ -282,3 +283,115 @@ loadOrders,
 
 
 loadOrders();
+
+// =====================
+// 今日報表
+// =====================
+
+function updateReport(data){
+
+
+let today =
+new Date()
+.toISOString()
+.substring(0,10);
+
+
+
+let orders = 0;
+
+let cups = 0;
+
+let sales = 0;
+
+let pending = 0;
+
+let making = 0;
+
+let done = 0;
+
+
+
+data.forEach(order=>{
+
+
+if(order.time){
+
+
+orders++;
+
+
+cups += Number(order.qty);
+
+
+sales += Number(order.total);
+
+
+
+if(order.status=="待製作"){
+
+pending++;
+
+}
+
+
+if(order.status=="製作中"){
+
+making++;
+
+}
+
+
+if(order.status=="完成"){
+
+done++;
+
+}
+
+
+}
+
+
+
+});
+
+
+
+
+
+document.getElementById("reportDate")
+.innerHTML = today;
+
+
+
+document.getElementById("reportOrders")
+.innerHTML = orders;
+
+
+
+document.getElementById("reportCups")
+.innerHTML = cups;
+
+
+
+document.getElementById("reportSales")
+.innerHTML = sales;
+
+
+
+document.getElementById("reportPending")
+.innerHTML = pending;
+
+
+
+document.getElementById("reportMaking")
+.innerHTML = making;
+
+
+
+document.getElementById("reportDone")
+.innerHTML = done;
+
+
+
+}
