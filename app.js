@@ -80,7 +80,15 @@ settings["公告"];
 }
 
 
+if(settings["測試模式"]==="ON"){
 
+status.innerHTML=
+"🟢 測試營業中";
+
+return;
+
+}
+  
 if(settings["店休"]==="ON"){
 
 
