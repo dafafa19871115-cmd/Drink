@@ -13,11 +13,117 @@
 <style>
 
 
+*{
+box-sizing:border-box;
+}
+
+
+body{
+
+font-family:
+"Microsoft JhengHei",
+Arial,
+sans-serif;
+
+background:#f5f5f5;
+
+padding:15px;
+
+margin:0;
+
+}
+
+
+
+h1{
+
+text-align:center;
+
+font-size:26px;
+
+}
+
+
+
+
+.box{
+
+background:white;
+
+border-radius:18px;
+
+padding:18px;
+
+margin-bottom:15px;
+
+box-shadow:
+0 3px 10px rgba(0,0,0,0.12);
+
+}
+
+
+
+
+.status{
+
+font-size:22px;
+
+font-weight:bold;
+
+text-align:center;
+
+padding:10px;
+
+border-radius:15px;
+
+}
+
+
+
+.open{
+
+background:#d8ffd8;
+
+color:#198754;
+
+}
+
+
+
+.close{
+
+background:#ffd9d9;
+
+color:#dc3545;
+
+}
+
+
+
+.order{
+
+
+background:white;
+
+border-radius:18px;
+
+padding:18px;
+
+margin-bottom:15px;
+
+box-shadow:
+0 3px 10px rgba(0,0,0,0.12);
+
+
+}
+
+
+
 .new-order{
 
-animation:newOrder 0.8s infinite;
-
 border:3px solid #ff9800;
+
+animation:newOrder 0.8s infinite;
 
 }
 
@@ -26,28 +132,15 @@ border:3px solid #ff9800;
 @keyframes newOrder{
 
 
-0%{
-
-transform:scale(1);
-
-}
-
-
 50%{
 
-transform:scale(1.05);
-
-}
-
-
-100%{
-
-transform:scale(1);
+transform:scale(1.03);
 
 }
 
 
 }
+
 
 
 
@@ -60,88 +153,32 @@ background:#ff5722;
 
 color:white;
 
-padding:5px 10px;
+padding:6px 12px;
 
 border-radius:20px;
 
 font-weight:bold;
 
-animation:blink 0.5s infinite;
-
 }
-
-
-
-@keyframes blink{
-
-
-50%{
-
-opacity:0.3;
-
-}
-
-
-}
-
-
-
-
-body{
-
-font-family:"Microsoft JhengHei";
-
-background:#f5f5f5;
-
-padding:20px;
-
-}
-
-
-
-h1{
-
-text-align:center;
-
-}
-
-
-
-.order{
-
-background:white;
-
-border-radius:15px;
-
-padding:20px;
-
-margin-bottom:15px;
-
-box-shadow:0 3px 10px #ccc;
-
-}
-
 
 
 
 button{
 
-width:auto;
 
-padding:10px 15px;
+width:100%;
+
+padding:14px;
+
+margin-top:8px;
 
 border:0;
 
-border-radius:10px;
+border-radius:12px;
 
-margin:5px;
-
-cursor:pointer;
-
-font-size:16px;
+font-size:18px;
 
 }
-
 
 
 
@@ -150,7 +187,6 @@ font-size:16px;
 background:#ffc107;
 
 }
-
 
 
 
@@ -164,18 +200,118 @@ color:white;
 
 
 
-
 .checkout{
 
 background:#ff9800;
 
 color:white;
 
-width:100%;
+}
 
-font-size:18px;
 
-margin-top:15px;
+
+.search{
+
+display:flex;
+
+gap:10px;
+
+}
+
+
+
+.search input{
+
+
+flex:1;
+
+padding:12px;
+
+font-size:16px;
+
+border-radius:10px;
+
+border:1px solid #ccc;
+
+
+}
+
+
+
+.search button{
+
+
+width:100px;
+
+background:#2196f3;
+
+color:white;
+
+
+}
+
+
+
+
+.report-grid{
+
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:10px;
+
+
+}
+
+
+
+.report-item{
+
+
+background:#fafafa;
+
+padding:12px;
+
+border-radius:12px;
+
+text-align:center;
+
+
+}
+
+
+
+
+@media(max-width:600px){
+
+
+
+h1{
+
+font-size:24px;
+
+}
+
+
+
+.report-grid{
+
+
+grid-template-columns:1fr 1fr;
+
+
+}
+
+
+
+.order h2{
+
+font-size:22px;
+
+}
+
 
 }
 
@@ -192,108 +328,174 @@ margin-top:15px;
 
 
 
-<h1>🧋 Bing Sha 接單後台</h1>
+<h1>
 
+🧋 Bing Sha 接單後台
 
+</h1>
 
 
 
-<!-- 今日報表 -->
 
-<div class="order">
 
+<!-- 營業狀態 -->
 
-<h2>📊 今日營業報表</h2>
+<div class="box">
 
 
+<div id="businessStatus"
 
-<p>
+class="status">
 
-📅 日期：
+檢查營業狀態中...
 
-<span id="reportDate">-</span>
+</div>
 
-</p>
 
+</div>
 
 
 
-<p>
 
-🧾 今日訂單：
 
-<span id="reportOrders">0</span>
 
-筆
 
-</p>
+<!-- 報表 -->
 
 
+<div class="box">
 
 
-<p>
+<h2>
+📊 營業報表
+</h2>
 
-🥤 今日杯數：
 
-<span id="reportCups">0</span>
 
-杯
+<div class="search">
 
-</p>
 
+<input
 
+type="date"
 
+id="reportDateInput">
 
-<p>
 
-💰 今日營業額：
+<button onclick="searchReport()">
 
-<span id="reportSales">0</span>
+查詢
 
-元
+</button>
 
-</p>
 
+</div>
 
 
 
-<p>
 
-⏳ 待製作：
 
-<span id="reportPending">0</span>
+<br>
 
-</p>
 
 
+<div class="report-grid">
 
 
-<p>
+<div class="report-item">
 
-🔥 製作中：
+🧾 訂單
 
-<span id="reportMaking">0</span>
+<br>
 
-</p>
+<span id="reportOrders">
+0
+</span>
 
+</div>
 
 
 
-<p>
+<div class="report-item">
 
-✅ 完成：
+🥤 杯數
 
-<span id="reportDone">0</span>
+<br>
 
-</p>
+<span id="reportCups">
+0
+</span>
 
+</div>
 
 
 
-<!-- 今日結帳 -->
 
-<button 
+<div class="report-item">
+
+💰 金額
+
+<br>
+
+<span id="reportSales">
+0
+</span>
+
+</div>
+
+
+
+
+<div class="report-item">
+
+⏳ 待製作
+
+<br>
+
+<span id="reportPending">
+0
+</span>
+
+</div>
+
+
+
+<div class="report-item">
+
+🔥 製作中
+
+<br>
+
+<span id="reportMaking">
+0
+</span>
+
+</div>
+
+
+
+<div class="report-item">
+
+✅ 完成
+
+<br>
+
+<span id="reportDone">
+0
+</span>
+
+</div>
+
+
+
+</div>
+
+
+
+<button
+
 class="checkout"
+
 onclick="checkoutToday()">
 
 💰 今日結帳
@@ -310,11 +512,14 @@ onclick="checkoutToday()">
 
 
 
-<!-- 訂單區 -->
+
+<!-- 訂單 -->
 
 <div id="orders">
 
+
 載入訂單中...
+
 
 </div>
 
@@ -322,12 +527,21 @@ onclick="checkoutToday()">
 
 
 
-<audio id="ding" src="ding.mp3"></audio>
+
+
+<audio
+
+id="ding"
+
+src="ding.mp3">
+
+</audio>
+
+
 
 
 
 <script src="admin.js"></script>
-
 
 
 </body>
