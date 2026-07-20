@@ -8,7 +8,7 @@ const API_URL =
 
 
 
-// 商品
+// 商品資料
 
 const products = [
 
@@ -40,11 +40,14 @@ let cart = [];
 
 
 
-// 商品區
+// ======================
+// 顯示商品
+// ======================
 
-const menu =
-document.getElementById("menu");
+const menu = document.getElementById("menu");
 
+
+if(menu){
 
 
 products.forEach((item,index)=>{
@@ -54,29 +57,47 @@ menu.innerHTML += `
 
 <div class="card">
 
-<h3>${item.name}</h3>
 
-<p>${item.price} 元</p>
+<h3>
+${item.name}
+</h3>
+
+
+<p>
+${item.price} 元
+</p>
+
 
 <button onclick="addCart(${index})">
 
-加入
+加入購物車
 
 </button>
 
 
 </div>
 
-`;
 
+`;
 
 
 });
 
 
+}else{
 
 
+console.error("找不到 menu");
+
+
+}
+
+
+
+
+// ======================
 // 加入購物車
+// ======================
 
 function addCart(index){
 
@@ -86,14 +107,16 @@ let item = products[index];
 
 let exist =
 cart.find(
-x=>x.name===item.name
+x => x.name === item.name
 );
 
 
 
 if(exist){
 
+
 exist.qty++;
+
 
 }else{
 
@@ -116,6 +139,11 @@ qty:1
 showCart();
 
 
+alert(
+item.name + " 已加入購物車"
+);
+
+
 }
 
 
@@ -125,8 +153,9 @@ window.addCart = addCart;
 
 
 
-
+// ======================
 // 顯示購物車
+// ======================
 
 function showCart(){
 
@@ -135,10 +164,14 @@ let box =
 document.getElementById("cart");
 
 
+if(!box) return;
+
+
+
 box.innerHTML="";
 
 
-let total=0;
+let total = 0;
 
 
 
@@ -147,19 +180,36 @@ cart.forEach(item=>{
 
 box.innerHTML += `
 
+
+<div class="card">
+
+
 <p>
 
 ${item.name}
 
-×
+<br>
+
+
+數量：
 
 ${item.qty}
 
-=
 
-${item.price * item.qty} 元
+<br>
+
+
+小計：
+
+${item.price * item.qty}
+
+元
+
 
 </p>
+
+
+</div>
 
 
 `;
@@ -169,12 +219,19 @@ ${item.price * item.qty} 元
 total += item.price * item.qty;
 
 
-
 });
 
 
 
-document.getElementById("total").innerHTML =
+let totalBox =
+document.getElementById("total");
+
+
+
+if(totalBox){
+
+
+totalBox.innerHTML =
 
 "總金額：" + total + " 元";
 
@@ -183,12 +240,19 @@ document.getElementById("total").innerHTML =
 
 
 
+}
 
 
 
+
+
+// ======================
 // 送出訂單
+// ======================
+
 
 async function submitOrder(){
+
 
 
 if(cart.length===0){
@@ -204,12 +268,14 @@ return;
 
 
 
-
 let productText =
+
 
 cart.map(item=>{
 
-return item.name+" x "+item.qty;
+
+return item.name + " x " + item.qty;
+
 
 }).join("、");
 
@@ -218,6 +284,7 @@ return item.name+" x "+item.qty;
 
 
 let total =
+
 
 cart.reduce(
 
@@ -228,7 +295,6 @@ sum + item.price * item.qty,
 0
 
 );
-
 
 
 
@@ -245,7 +311,7 @@ cart.reduce(
 
 (sum,item)=>
 
-sum+item.qty,
+sum + item.qty,
 
 0
 
@@ -263,21 +329,21 @@ total:total
 try{
 
 
-let response =
 
-await fetch(
+let response = await fetch(
 
 API_URL,
 
 {
-
 
 method:"POST",
 
 
 headers:{
 
+
 "Content-Type":"text/plain"
+
 
 },
 
@@ -291,24 +357,27 @@ body:JSON.stringify(data)
 
 
 
-let result =
 
-await response.json();
-
+let result = await response.json();
 
 
 
-document.getElementById("result").innerHTML =
+document.getElementById("result").innerHTML = `
 
-`
 
 ✅ 訂單完成
 
 <br>
 
+
 訂單編號：
 
-<b>${result.orderId}</b>
+<b>
+
+${result.orderId}
+
+</b>
+
 
 `;
 
@@ -316,19 +385,27 @@ document.getElementById("result").innerHTML =
 
 cart=[];
 
+
 showCart();
 
 
 
 }
 
+
 catch(error){
 
 
-console.error(error);
+console.error(
+"送出錯誤:",
+error
+);
 
 
-alert("送出失敗");
+
+alert(
+"訂單送出失敗，請檢查網路或 API"
+);
 
 
 }
