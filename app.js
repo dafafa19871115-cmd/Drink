@@ -7,19 +7,23 @@ const products=[
 
 {
 name:"綠豆沙",
-price:60
+price:50
 },
 
 {
 name:"葡萄冰沙",
-price:70
+price:50
 },
 
 {
 name:"芒果冰沙",
-price:80
+price:50
 }
 
+{
+name:"隱藏版(百香果風味冰沙)",
+price:50
+}  
 ];
 
 
