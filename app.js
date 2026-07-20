@@ -1,11 +1,16 @@
 alert("app.js 有載入");
 
+
+// Google Apps Script API
+
 const API_URL =
 "https://script.google.com/macros/s/AKfycbxo3Gda0zUuI8gkaHSqjJza5KaEn0CILxfjdONDkpjoIoE2cLGEojEwbTuX1kQfh3FKwg/exec";
 
 
 
-const products=[
+// 商品
+
+const products = [
 
 {
 name:"綠豆沙",
@@ -31,18 +36,16 @@ price:50
 
 
 
-let cart=[];
+let cart = [];
 
 
+
+// 商品區
 
 const menu =
 document.getElementById("menu");
-console.log(menu);
-console.log(products);
 
 
-
-// 顯示商品
 
 products.forEach((item,index)=>{
 
@@ -51,17 +54,14 @@ menu.innerHTML += `
 
 <div class="card">
 
-<h3>
-${item.name}
-</h3>
+<h3>${item.name}</h3>
 
-<p>
-${item.price} 元
-</p>
-
+<p>${item.price} 元</p>
 
 <button onclick="addCart(${index})">
+
 加入
+
 </button>
 
 
@@ -81,8 +81,7 @@ ${item.price} 元
 function addCart(index){
 
 
-let item =
-products[index];
+let item = products[index];
 
 
 let exist =
@@ -113,6 +112,7 @@ qty:1
 }
 
 
+
 showCart();
 
 
@@ -120,11 +120,13 @@ showCart();
 
 
 
-window.addCart=addCart;
+window.addCart = addCart;
 
 
 
 
+
+// 顯示購物車
 
 function showCart(){
 
@@ -155,16 +157,16 @@ ${item.qty}
 
 =
 
-${item.price*item.qty}元
-
+${item.price * item.qty} 元
 
 </p>
+
 
 `;
 
 
-total +=
-item.price*item.qty;
+
+total += item.price * item.qty;
 
 
 
@@ -172,9 +174,9 @@ item.price*item.qty;
 
 
 
-document.getElementById("total")
-.innerHTML =
-"總金額："+total+" 元";
+document.getElementById("total").innerHTML =
+
+"總金額：" + total + " 元";
 
 
 }
@@ -182,23 +184,24 @@ document.getElementById("total")
 
 
 
-//送出訂單
 
+
+// 送出訂單
 
 async function submitOrder(){
-
-console.log("開始送出訂單");
-
-try{
 
 
 if(cart.length===0){
 
+
 alert("請先選擇飲料");
+
 
 return;
 
+
 }
+
 
 
 
@@ -212,13 +215,15 @@ return item.name+" x "+item.qty;
 
 
 
+
+
 let total =
 
 cart.reduce(
 
 (sum,item)=>
 
-sum+item.price*item.qty,
+sum + item.price * item.qty,
 
 0
 
@@ -226,11 +231,17 @@ sum+item.price*item.qty,
 
 
 
-let data={
+
+
+let data = {
+
 
 product:productText,
 
-qty:cart.reduce(
+
+qty:
+
+cart.reduce(
 
 (sum,item)=>
 
@@ -240,13 +251,16 @@ sum+item.qty,
 
 ),
 
+
 total:total
+
 
 };
 
 
-console.log("送出資料",data);
 
+
+try{
 
 
 let response =
@@ -257,7 +271,9 @@ API_URL,
 
 {
 
+
 method:"POST",
+
 
 headers:{
 
@@ -265,15 +281,13 @@ headers:{
 
 },
 
+
 body:JSON.stringify(data)
+
 
 }
 
 );
-
-
-
-console.log("API回應",response);
 
 
 
@@ -283,11 +297,8 @@ await response.json();
 
 
 
-console.log(result);
 
-
-
-document.getElementById("result").innerHTML=
+document.getElementById("result").innerHTML =
 
 `
 
@@ -308,6 +319,7 @@ cart=[];
 showCart();
 
 
+
 }
 
 catch(error){
@@ -318,101 +330,13 @@ console.error(error);
 
 alert("送出失敗");
 
-}
-
 
 }
 
-
-
-let productText =
-cart.map(item=>{
-
-return item.name+" x "+item.qty;
-
-})
-.join("、");
-
-
-
-let total =
-cart.reduce(
-
-(sum,item)=>
-sum+
-item.price*item.qty,
-
-0
-
-);
-
-
-
-let data={
-
-product:productText,
-
-qty:cart.reduce(
-
-(sum,item)=>
-sum+item.qty,
-
-0
-
-),
-
-total:total
-
-};
-
-
-
-let response =
-await fetch(
-
-API_URL,
-
-{
-
-method:"POST",
-
-body:JSON.stringify(data)
-
-}
-
-);
-
-
-
-let result =
-await response.json();
-
-
-
-document.getElementById("result")
-.innerHTML =
-
-`
-
-✅ 訂單完成
-
-<br>
-
-您的訂單編號：
-
-<b>${result.orderId}</b>
-
-`;
-
-
-cart=[];
-
-showCart();
 
 
 }
 
 
 
-window.submitOrder=
-submitOrder;
+window.submitOrder = submitOrder;
