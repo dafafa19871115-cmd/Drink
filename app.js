@@ -1,13 +1,13 @@
 console.log("Bing Sha app.js 正確載入");
 
+
 const API_URL =
 "https://script.google.com/macros/s/AKfycbwyhSkdqqusgb13X35I5r2nfmtM6Iqd48N8XORWUGwwwv0CIlJcKmj5t7qTkjGvix5QLg/exec";
 
 
-console.log("Bing Sha app.js 載入");
-
 
 let cart=[];
+
 
 
 const products=[
@@ -37,6 +37,7 @@ price:50
 
 
 
+
 // =====================
 // 台灣時間
 // =====================
@@ -53,6 +54,7 @@ timeZone:"Asia/Taipei"
 );
 
 }
+
 
 
 
@@ -84,134 +86,7 @@ console.log(
 settings
 );
 
-  let status =
-document.getElementById(
-"storeStatus"
-);
 
-
-let notice =
-document.getElementById(
-"announcement"
-);
-
-
-// 公告
-
-if(settings["公告"]){
-
-notice.style.display="block";
-
-notice.innerHTML =
-"📢 "
-+
-settings["公告"];
-
-}
-
-
-// 測試模式
-
-if(settings["測試模式"]==="ON"){
-
-
-status.innerHTML =
-"🟢 測試營業中";
-
-
-enableOrder();
-
-return;
-
-}
-
-
-// 店休
-
-if(settings["店休"]==="ON"){
-
-
-status.innerHTML =
-"🔴 今日店休";
-
-
-disableOrder();
-
-return;
-
-}
-
-
-// 暫停接單
-
-if(settings["接受訂單"]==="OFF"){
-
-
-status.innerHTML =
-"🟠 暫停接單";
-
-
-disableOrder();
-
-return;
-
-}
-
-
-// 營業時間
-
-let now =
-new Date();
-
-
-let current =
-now.getHours()
-.toString()
-.padStart(2,"0")
-+
-":"
-+
-now.getMinutes()
-.toString()
-.padStart(2,"0");
-
-
-
-let open =
-settings["開店時間"];
-
-
-let close =
-settings["打烊時間"];
-
-
-
-
-if(
-current >= open &&
-current <= close
-){
-
-
-status.innerHTML =
-"🟢 目前營業中";
-
-
-enableOrder();
-
-
-}
-else{
-
-
-status.innerHTML =
-"🔴 目前休息時間";
-
-
-disableOrder();
-
-
-}
 
 
 let status =
@@ -233,24 +108,20 @@ document.getElementById(
 
 if(settings["公告"]){
 
-
 notice.style.display="block";
-
 
 notice.innerHTML=
 "📢 "
 +
 settings["公告"];
 
-
 }
 else{
 
-
 notice.style.display="none";
 
-
 }
+
 
 
 
@@ -275,6 +146,7 @@ return;
 
 
 
+
 // 店休
 
 if(settings["店休"]==="ON"){
@@ -295,7 +167,8 @@ return;
 
 
 
-// 暫停接單
+
+// 接單關閉
 
 if(settings["接受訂單"]==="OFF"){
 
@@ -321,7 +194,7 @@ getTaiwanTime();
 
 
 
-let time =
+let current =
 now.getHours()
 .toString()
 .padStart(2,"0")
@@ -335,60 +208,47 @@ now.getMinutes()
 
 
 let open =
+formatTime(
 settings["開店時間"]
-||
-"00:00";
+);
+
 
 
 let close =
+formatTime(
 settings["打烊時間"]
-||
-"23:59";
+);
 
 
 
 console.log(
 "時間:",
-time,
-"開店:",
+current,
 open,
-"打烊:",
 close
 );
 
 
 
-
-
-let isOpen=false;
+let openStatus=false;
 
 
 
 if(open <= close){
 
 
-if(
-time>=open &&
-time<=close
-){
-
-isOpen=true;
-
-}
+openStatus =
+current >= open &&
+current <= close;
 
 
 }
 else{
 
 
-if(
-time>=open ||
-time<=close
-){
-
-isOpen=true;
-
-}
+openStatus =
+current >= open ||
+current <= close;
 
 
 }
@@ -396,7 +256,7 @@ isOpen=true;
 
 
 
-if(isOpen){
+if(openStatus){
 
 
 status.innerHTML=
@@ -420,13 +280,13 @@ disableOrder();
 }
 
 
-}
 
+}
 catch(error){
 
 
 console.error(
-"讀取設定錯誤",
+"讀取設定錯誤:",
 error
 );
 
@@ -438,6 +298,57 @@ error
 
 
 
+
+// =====================
+// 時間格式處理
+// =====================
+
+function formatTime(value){
+
+
+if(!value){
+
+return "00:00";
+
+}
+
+
+// Google Sheet 日期格式
+
+if(value.includes("T")){
+
+
+let d =
+new Date(value);
+
+
+return d.getHours()
+.toString()
+.padStart(2,"0")
++
+":"
++
+d.getMinutes()
+.toString()
+.padStart(2,"0");
+
+
+}
+
+
+return value.substring(0,5);
+
+
+}
+
+
+
+
+
+
+// =====================
+// 啟用送單
+// =====================
 
 function enableOrder(){
 
@@ -451,18 +362,27 @@ document.getElementById(
 
 if(btn){
 
+
 btn.disabled=false;
+
 
 btn.innerHTML=
 "送出訂單";
 
-}
-
 
 }
 
 
+}
 
+
+
+
+
+
+// =====================
+// 停止送單
+// =====================
 
 function disableOrder(){
 
@@ -476,29 +396,53 @@ document.getElementById(
 
 if(btn){
 
+
 btn.disabled=true;
+
 
 btn.innerHTML=
 "目前停止接單";
 
+
 }
 
 
 }
+
+
+
 
 
 
 
 // =====================
-// 商品顯示
+// 顯示商品
 // =====================
+
+
+function showProducts(){
 
 
 let menu =
-document.getElementById("menu");
+document.getElementById(
+"menu"
+);
 
 
-if(menu){
+
+if(!menu){
+
+console.log("找不到 menu");
+
+return;
+
+}
+
+
+
+menu.innerHTML="";
+
+
 
 products.forEach((p,i)=>{
 
@@ -509,10 +453,15 @@ menu.innerHTML += `
 <div class="card">
 
 
-<h3>${p.name}</h3>
+<h3>
+${p.name}
+</h3>
 
 
-<p>${p.price} 元</p>
+<p>
+${p.price} 元
+</p>
+
 
 
 <button onclick="addCart(${i})">
@@ -528,15 +477,13 @@ menu.innerHTML += `
 `;
 
 
+
 });
 
 
-}
-else{
-
-console.log("找不到 menu");
 
 }
+
 
 
 
@@ -544,7 +491,7 @@ console.log("找不到 menu");
 
 
 // =====================
-// 加入購物車
+// 加購物車
 // =====================
 
 
@@ -565,9 +512,7 @@ x=>x.name===item.name
 
 if(exist){
 
-
 exist.qty++;
-
 
 }
 else{
@@ -608,12 +553,13 @@ function showCart(){
 
 
 let box =
-document.getElementById("cart");
+document.getElementById(
+"cart"
+);
 
 
 
 box.innerHTML="";
-
 
 
 let total=0;
@@ -646,7 +592,6 @@ ${item.price * item.qty}
 `;
 
 
-
 total +=
 item.price * item.qty;
 
@@ -655,8 +600,10 @@ item.price * item.qty;
 
 
 
-document.getElementById("total")
-.innerHTML =
+document.getElementById(
+"total"
+)
+.innerHTML=
 "總金額："
 +
 total
@@ -664,8 +611,8 @@ total
 " 元";
 
 
-
 }
+
 
 
 
@@ -698,72 +645,33 @@ return;
 
 
 
-
-let product =
-cart.map(item=>{
-
-
-return (
-
-item.name
-+
-" x "
-+
-item.qty
-
-);
-
-
-})
-.join("、");
-
-
-
-
-
-
-let qty =
-cart.reduce(
-
-(sum,item)=>
-
-sum + item.qty,
-
-0
-
-);
-
-
-
-
-
-
-let total =
-cart.reduce(
-
-(sum,item)=>
-
-sum + item.price * item.qty,
-
-0
-
-);
-
-
-
-
-
-
 let orderData={
 
 
-product:product,
+product:
+
+cart.map(x=>
+
+x.name+" x "+x.qty
+
+)
+.join("、"),
 
 
-qty:qty,
+qty:
+
+cart.reduce(
+(a,b)=>a+b.qty,
+0
+),
 
 
-total:total
+total:
+
+cart.reduce(
+(a,b)=>a+b.price*b.qty,
+0
+)
 
 
 };
@@ -773,10 +681,9 @@ total:total
 
 
 console.log(
-"送出資料:",
+"送出:",
 orderData
 );
-
 
 
 
@@ -785,32 +692,25 @@ try{
 
 
 let response =
-await fetch(API_URL,{
-
+await fetch(
+API_URL,
+{
 
 method:"POST",
 
-
-mode:"cors",
-
-
 headers:{
 
-
 "Content-Type":
-"text/plain;charset=utf-8"
-
+"text/plain"
 
 },
-
 
 body:
 JSON.stringify(orderData)
 
+}
 
-});
-
-
+);
 
 
 
@@ -821,46 +721,14 @@ await response.text();
 
 
 console.log(
-"API回覆:",
+"回覆:",
 text
 );
 
 
 
-
-
-
-let data;
-
-
-
-try{
-
-
-data =
+let data =
 JSON.parse(text);
-
-
-}
-
-catch(e){
-
-
-alert(
-"API格式錯誤\n\n"
-+
-text
-);
-
-
-return;
-
-
-}
-
-
-
-
 
 
 
@@ -868,23 +736,14 @@ if(data.success){
 
 
 
-document.getElementById("result")
-.innerHTML =
+document.getElementById(
+"result"
+)
+.innerHTML=
 
-
-`
-
-✅ 訂單完成
-
-<br>
-
-訂單編號：
-
-<b>${data.orderId}</b>
-
-`;
-
-
+"✅ 訂單完成<br>訂單編號："
++
+data.orderId;
 
 
 
@@ -894,21 +753,19 @@ cart=[];
 showCart();
 
 
-
-
-
 }
-
 else{
 
 
 alert(
+
 "訂單失敗："
 +
 (
 data.message ||
 data.error ||
 "未知錯誤"
+
 )
 
 );
@@ -919,41 +776,25 @@ data.error ||
 
 
 }
-
-
-
-
-
-}
-
 catch(error){
 
 
-
-console.error(
-"送單錯誤:",
-error
-);
-
+console.error(error);
 
 
 alert(
-
-"送出失敗："
-
+"送出失敗:"
 +
-
 error.message
-
 );
 
 
-
 }
 
 
 
 }
+
 
 
 
@@ -964,11 +805,22 @@ error.message
 // =====================
 
 
-window.onload = function(){
+window.onload=function(){
 
-console.log("開始讀取店家設定");
+
+console.log(
+"Bing Sha 啟動"
+);
+
+
+
+showProducts();
+
 
 showCart();
 
 
 loadStore();
+
+
+};
