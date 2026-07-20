@@ -1,205 +1,105 @@
-const API_URL =
-"https://script.google.com/macros/s/AKfycbzeHK8T0UZ2mvNC2-0EiPItOPf-RY8LeUCP52QVRkncE3hktAcvB707ZWBTOPbqxXUNmA/exec";
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bing Sha 接單後台</title>
+
+<style>
+
+body{
+
+font-family:"Microsoft JhengHei";
+
+background:#f5f5f5;
+
+padding:20px;
+
+}
 
 
+h1{
 
-async function loadOrders(){
+text-align:center;
 
-
-let res =
-await fetch(API_URL);
-
+}
 
 
-let orders =
-await res.json();
+.order{
+
+background:white;
+
+border-radius:15px;
+
+padding:20px;
+
+margin-bottom:15px;
+
+box-shadow:0 3px 10px #ccc;
+
+}
 
 
+button{
 
-let box =
-document.getElementById("orders");
+padding:10px 15px;
 
+border:0;
 
-box.innerHTML="";
+border-radius:10px;
 
+margin:5px;
 
+cursor:pointer;
 
-let today =
-new Date()
-.toISOString()
-.slice(0,10);
-
-
-
-let todayOrders =
-orders.filter(
-
-o=>o.date===today
-
-);
+}
 
 
+.start{
 
-todayOrders.reverse()
-.forEach(order=>{
+background:#ffc107;
 
-
-box.innerHTML += `
-
-<div class="order">
+}
 
 
-<h3>
+.finish{
 
-${order.orderId}
+background:#4caf50;
 
-</h3>
+color:white;
 
-
-<p>
-${order.product}
-</p>
+}
 
 
-<p>
-金額：
-${order.total} 元
-</p>
+</style>
+
+</head>
 
 
-<p>
-
-狀態：
-
-<select>
-
-<option>
-${order.status}
-</option>
-
-<option>
-待製作
-</option>
-
-<option>
-製作中
-</option>
-
-<option>
-完成
-</option>
-
-</select>
+<body>
 
 
-</p>
+<h1>🧋 Bing Sha 接單後台</h1>
 
+
+<div id="orders">
+
+載入訂單中...
 
 </div>
 
-`;
+
+<audio id="ding" src="ding.mp3"></audio>
 
 
 
-});
+<script src="admin.js"></script>
 
 
+</body>
 
-showHot(todayOrders);
-
-
-}
-
-
-
-
-function showHot(orders){
-
-
-let count={};
-
-
-
-orders.forEach(order=>{
-
-
-let items =
-order.product.split("、");
-
-
-
-items.forEach(item=>{
-
-
-let name =
-item.split(" x ")[0];
-
-
-let qty =
-Number(
-item.split(" x ")[1]
-);
-
-
-
-count[name]
-=
-(count[name]||0)
-+
-qty;
-
-
-});
-
-
-});
-
-
-
-let box =
-document.getElementById("hot");
-
-
-box.innerHTML="";
-
-
-
-Object.entries(count)
-
-.sort((a,b)=>b[1]-a[1])
-
-.forEach((item,index)=>{
-
-
-box.innerHTML +=`
-
-<p>
-
-${index+1}️⃣
-
-${item[0]}
-
-${item[1]} 杯
-
-</p>
-
-`;
-
-
-});
-
-
-}
-
-
-
-loadOrders();
-
-
-setInterval(
-
-loadOrders,
-
-10000
-
-);
+</html>
