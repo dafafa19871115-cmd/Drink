@@ -7,6 +7,7 @@ const API_URL =
 let oldOrders = [];
 
 let firstLoad = true;
+let todayReport = [];
 
 
 
