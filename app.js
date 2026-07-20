@@ -1,4 +1,4 @@
-alert("app.js 有載入");
+console.log("Bing Sha app.js 已載入");
 
 
 // Google Apps Script API
