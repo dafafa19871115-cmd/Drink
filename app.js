@@ -1,3 +1,5 @@
+alert("app.js 有載入");
+
 const API_URL =
 "https://script.google.com/macros/s/AKfycbxo3Gda0zUuI8gkaHSqjJza5KaEn0CILxfjdONDkpjoIoE2cLGEojEwbTuX1kQfh3FKwg/exec";
 
