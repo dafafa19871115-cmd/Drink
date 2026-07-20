@@ -9,15 +9,18 @@
 
 <title>Bing Sha 接單後台</title>
 
+
 <style>
 
-  .new-order{
+
+.new-order{
 
 animation:newOrder 0.8s infinite;
 
 border:3px solid #ff9800;
 
 }
+
 
 
 @keyframes newOrder{
@@ -47,6 +50,8 @@ transform:scale(1);
 }
 
 
+
+
 .badge{
 
 display:inline-block;
@@ -66,6 +71,7 @@ animation:blink 0.5s infinite;
 }
 
 
+
 @keyframes blink{
 
 
@@ -78,6 +84,9 @@ opacity:0.3;
 
 }
 
+
+
+
 body{
 
 font-family:"Microsoft JhengHei";
@@ -89,11 +98,13 @@ padding:20px;
 }
 
 
+
 h1{
 
 text-align:center;
 
 }
+
 
 
 .order{
@@ -111,7 +122,11 @@ box-shadow:0 3px 10px #ccc;
 }
 
 
+
+
 button{
+
+width:auto;
 
 padding:10px 15px;
 
@@ -123,7 +138,11 @@ margin:5px;
 
 cursor:pointer;
 
+font-size:16px;
+
 }
+
+
 
 
 .start{
@@ -131,6 +150,8 @@ cursor:pointer;
 background:#ffc107;
 
 }
+
+
 
 
 .finish{
@@ -142,69 +163,154 @@ color:white;
 }
 
 
+
+
+.checkout{
+
+background:#ff9800;
+
+color:white;
+
+width:100%;
+
+font-size:18px;
+
+margin-top:15px;
+
+}
+
+
+
 </style>
 
+
 </head>
+
 
 
 <body>
 
 
+
 <h1>🧋 Bing Sha 接單後台</h1>
+
+
+
 
 
 <!-- 今日報表 -->
 
 <div class="order">
 
+
 <h2>📊 今日營業報表</h2>
 
 
+
 <p>
+
 📅 日期：
+
 <span id="reportDate">-</span>
+
 </p>
 
 
+
+
 <p>
+
 🧾 今日訂單：
-<span id="reportOrders">0</span> 筆
+
+<span id="reportOrders">0</span>
+
+筆
+
 </p>
 
 
+
+
 <p>
+
 🥤 今日杯數：
-<span id="reportCups">0</span> 杯
+
+<span id="reportCups">0</span>
+
+杯
+
 </p>
 
 
+
+
 <p>
+
 💰 今日營業額：
-<span id="reportSales">0</span> 元
+
+<span id="reportSales">0</span>
+
+元
+
 </p>
 
 
+
+
 <p>
+
 ⏳ 待製作：
+
 <span id="reportPending">0</span>
+
 </p>
 
 
+
+
 <p>
+
 🔥 製作中：
+
 <span id="reportMaking">0</span>
+
 </p>
+
+
 
 
 <p>
+
 ✅ 完成：
+
 <span id="reportDone">0</span>
+
 </p>
+
+
+
+
+<!-- 今日結帳 -->
+
+<button 
+class="checkout"
+onclick="checkoutToday()">
+
+💰 今日結帳
+
+</button>
+
 
 
 </div>
 
 
+
+
+
+
+
+<!-- 訂單區 -->
 
 <div id="orders">
 
@@ -213,11 +319,15 @@ color:white;
 </div>
 
 
+
+
+
 <audio id="ding" src="ding.mp3"></audio>
 
 
 
 <script src="admin.js"></script>
+
 
 
 </body>
