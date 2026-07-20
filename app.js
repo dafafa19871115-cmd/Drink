@@ -1,5 +1,5 @@
 const API_URL =
-"https://script.google.com/macros/s/AKfycbxN60Cp5tE9ygEFsP7N6CLp3cxZq4bVk2ywebHLT87jjfnbSOlgvgiG8PXf7hJ0L2hJ7A/exec";
+"https://script.google.com/macros/s/AKfycbwq6inwveLhkTfNHIfbBfTskFT9Wx5k1fEGQCoiML7BrnzR5p-YUFcOVqLjt57J9YYkeA/exec";
 
 
 console.log("Bing Sha app.js 載入");
