@@ -4,7 +4,7 @@ console.log("Bing Sha app.js 正確載入");
 
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbx3hPX6sq38BC3AUErsj6zSjoOPwQaF3JYnKCLN1hPZCX9rfiHLoUoDXVJe5nmKiWoFjA/exec";
+"https://script.google.com/macros/s/AKfycbxPgSWXjHC7fJ5d5283QapaPNUEEoTOgvorkfhXqsAeg78kCIxHEil5YO5zY2ttmzLEyw/exec";
 
 
 
