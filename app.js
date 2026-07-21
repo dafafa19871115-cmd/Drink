@@ -693,16 +693,13 @@ orderData
 try{
 
 
-let response = await fetch(
-  API_URL,
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8"
+let response = await fetch(API_URL,{
+    method:"POST",
+    headers:{
+        "Content-Type":"text/plain;charset=utf-8"
     },
-    body: JSON.stringify(orderData)
-  }
-);
+    body:JSON.stringify(orderData)
+});
 
 let text = await response.text();
 
