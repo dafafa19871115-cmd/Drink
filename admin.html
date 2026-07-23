@@ -4,174 +4,118 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bing Sha v3.0 商用管理後台</title>
+<title>Bing Sha v3.0 POS 後台</title>
 
 <link rel="stylesheet" href="style.css">
 
+
 <style>
 
+
 body{
-    background:#f2f2f2;
-}
-
-.container{
-    max-width:1000px;
-    margin:auto;
-    padding:20px;
-}
-
-h1{
-    text-align:center;
-    color:#ff5722;
+margin:0;
+background:#f5f5f5;
 }
 
 
-/* Dashboard */
+.layout{
 
-.dashboard{
-
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
-margin-bottom:25px;
+display:flex;
+min-height:100vh;
 
 }
+
+
+
+.sidebar{
+
+width:220px;
+background:#ff5722;
+color:white;
+padding:20px;
+
+}
+
+
+
+.sidebar h2{
+
+text-align:center;
+
+}
+
+
+
+.sidebar button{
+
+width:100%;
+padding:15px;
+margin:8px 0;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+
+}
+
+
+
+.main{
+
+flex:1;
+padding:20px;
+
+}
+
 
 
 .card{
 
 background:white;
 padding:20px;
-border-radius:12px;
-box-shadow:0 4px 10px #ddd;
-text-align:center;
+border-radius:15px;
+margin-bottom:20px;
+box-shadow:0 3px 10px #ddd;
 
 }
 
 
-.card h2{
 
-color:#ff5722;
-
-}
-
-
-/* 功能 */
-
-.menu{
+.dashboard{
 
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:15px;
-margin-bottom:30px;
-
-}
-
-
-.menu button{
-
-padding:15px;
-border:none;
-border-radius:10px;
-font-size:16px;
-cursor:pointer;
-background:#ff5722;
-color:white;
-
-}
-
-
-/* 訂單 */
-
-
-#orders{
-
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
 gap:20px;
 
 }
 
 
+
+.number{
+
+font-size:30px;
+color:#ff5722;
+font-weight:bold;
+
+}
+
+
+
 .order{
 
 background:white;
-padding:18px;
-border-radius:12px;
-box-shadow:0 4px 10px rgba(0,0,0,.15);
-
-}
-
-
-.order h2{
-
-color:#ff5722;
-
-}
-
-
-button{
-
-cursor:pointer;
-
-}
-
-
-.start{
-
-background:#2196F3;
-color:white;
-border:0;
-padding:12px;
-width:100%;
-border-radius:8px;
-margin-top:8px;
-
-}
-
-
-.finish{
-
-background:#4CAF50;
-color:white;
-border:0;
-padding:12px;
-width:100%;
-border-radius:8px;
-margin-top:8px;
-
-}
-
-
-.cancel{
-
-background:#f44336;
-color:white;
-border:0;
-padding:12px;
-width:100%;
-border-radius:8px;
-margin-top:8px;
-
-}
-
-
-.call{
-
-background:#9C27B0;
-color:white;
-border:0;
-padding:12px;
-width:100%;
-border-radius:8px;
-margin-top:8px;
+padding:15px;
+margin:10px 0;
+border-radius:10px;
 
 }
 
 
 </style>
+
 
 </head>
 
@@ -179,88 +123,43 @@ margin-top:8px;
 <body>
 
 
-<div class="container">
+<div class="layout">
 
 
-<h1>
-🧋 Bing Sha v3.0 商用管理後台
-</h1>
+<div class="sidebar">
 
-
-
-<!-- 營業數據 -->
-
-<div class="dashboard">
-
-
-<div class="card">
-
-<h2 id="todayMoney">
-$0
-</h2>
-
-<p>📊 今日營業額</p>
-
-</div>
-
-
-
-<div class="card">
-
-<h2 id="todayCount">
-0
-</h2>
-
-<p>🥤 今日杯數</p>
-
-</div>
-
-
-
-<div class="card">
 
 <h2>
-🔥
+🧋 Bing Sha
 </h2>
 
-<p>熱賣排行榜</p>
 
-</div>
+<button onclick="showPage('dashboard')">
 
-
-</div>
-
-
-
-
-<!-- 管理功能 -->
-
-
-<div class="menu">
-
-
-<button onclick="showHistory()">
-
-📅 歷史訂單
+📊 今日營運
 
 </button>
 
 
+<button onclick="showPage('orders')">
 
-<button onclick="cancelMode()">
-
-❌ 取消訂單
+📦 訂單管理
 
 </button>
 
 
-
-<button onclick="productManage()">
+<button onclick="showPage('products')">
 
 🔍 商品管理
 
 </button>
 
+
+<button onclick="showPage('history')">
+
+📅 歷史訂單
+
+</button>
 
 
 <button onclick="logout()">
@@ -275,42 +174,31 @@ $0
 
 
 
-
-<!-- 訂單區 -->
-
-
-<h2>
-📦 最新訂單
-</h2>
+<div class="main">
 
 
-<div id="orders">
-
-</div>
-
+<div id="content">
 
 
 </div>
 
 
+</div>
 
 
-
-<audio id="ding">
-
-<source src="ding.mp3">
-
-</audio>
+</div>
 
 
 
 <script>
+
 
 if(localStorage.getItem("shopLogin")!=="true"){
 
 location.href="login.html";
 
 }
+
 
 </script>
 
