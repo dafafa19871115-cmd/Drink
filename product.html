@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bing Sha 商品管理</title>
+
+<link rel="stylesheet" href="style.css">
+
+
+<style>
+
+
+.container{
+
+max-width:800px;
+
+margin:auto;
+
+padding:20px;
+
+}
+
+
+
+.box{
+
+background:white;
+
+padding:20px;
+
+border-radius:15px;
+
+box-shadow:0 4px 10px #ddd;
+
+margin-bottom:20px;
+
+}
+
+
+
+input{
+
+padding:10px;
+
+margin:5px;
+
+font-size:16px;
+
+}
+
+
+
+button{
+
+padding:10px 15px;
+
+border:none;
+
+border-radius:8px;
+
+background:#ff5722;
+
+color:white;
+
+cursor:pointer;
+
+}
+
+
+
+.product{
+
+background:#fafafa;
+
+padding:15px;
+
+margin:10px 0;
+
+border-radius:10px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+
+
+.off{
+
+background:#999;
+
+}
+
+
+</style>
+
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<h1>
+🔍 商品管理
+</h1>
+
+
+
+<div class="box">
+
+
+<h2>
+新增飲料
+</h2>
+
+
+<input id="name"
+placeholder="商品名稱">
+
+
+<input id="price"
+type="number"
+placeholder="價格">
+
+
+
+<button onclick="addProduct()">
+
+新增
+
+</button>
+
+
+</div>
+
+
+
+<div class="box">
+
+
+<h2>
+商品列表
+</h2>
+
+
+<div id="products">
+
+讀取中...
+
+</div>
+
+
+</div>
+
+
+
+<button onclick="backAdmin()">
+
+⬅ 返回後台
+
+</button>
+
+
+
+</div>
+
+
+
+<script src="product.js"></script>
+
+
+</body>
+
+
+</html>
