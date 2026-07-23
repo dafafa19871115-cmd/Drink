@@ -5,8 +5,10 @@
 const API_URL =
 "https://script.google.com/macros/s/AKfycbxtXHzRCHRZklP_eCY16EvUk_TzvWjg9Ndmx1sXC4QRpO8rFzey1z0VCrAGeLomWNP-mg/exec";
 
-let oldOrders = [];
-let firstLoad = true;
+
+let oldOrders=[];
+let firstLoad=true;
+
 
 // =========================
 // 讀取訂單
@@ -14,156 +16,458 @@ let firstLoad = true;
 
 async function loadOrders(){
 
-    try{
+try{
 
-        const response = await fetch(API_URL);
-        const data = await response.json();
 
-        // 最新訂單排最上面
-        data.reverse();
+const response=await fetch(API_URL);
 
-        const box = document.getElementById("orders");
-        box.innerHTML = "";
+const data=await response.json();
 
-        data.forEach(order=>{
 
-            const isNew =
-                !firstLoad &&
-                !oldOrders.some(x=>x.id===order.id);
+data.reverse();
 
-            let statusClass="wait";
 
-            if(order.status==="製作中"){
-                statusClass="making";
-            }
 
-            if(order.status==="完成"){
-                statusClass="done";
-            }
+const box=document.getElementById("orders");
 
-            box.innerHTML += `
+box.innerHTML="";
 
-            <div class="order ${isNew ? "new-order":""}">
 
-                ${isNew ? "<span class='badge'>🔔 新訂單</span>" : ""}
 
-                <h2>${order.orderId}</h2>
+data.forEach(order=>{
 
-                <p>🥤 ${order.product}</p>
 
-                <p>杯數：${order.qty}</p>
+const isNew =
+!firstLoad &&
+!oldOrders.some(x=>x.id===order.id);
 
-                <p>金額：${order.total} 元</p>
 
-                <p>
 
-                    狀態：
+let statusClass="wait";
 
-                    <span class="status ${statusClass}">
 
-                        ${order.status}
+if(order.status==="製作中")
+statusClass="making";
 
-                    </span>
 
-                </p>
+if(order.status==="完成")
+statusClass="done";
 
-                <button
-                    class="start"
-                    onclick="updateStatus('${order.id}','製作中')">
 
-                    開始製作
 
-                </button>
+box.innerHTML += `
 
-                <button
-                    class="finish"
-                    onclick="updateStatus('${order.id}','完成')">
 
-                    完成
+<div class="order ${isNew?"new-order":""}">
 
-                </button>
 
-            </div>
+${isNew?
+"<span class='badge'>🔔 新訂單</span>":
+""}
 
-            `;
 
-        });
 
-        // 新訂單提示音
-        if(!firstLoad && data.length>oldOrders.length){
+<h2>
 
-            const ding=document.getElementById("ding");
+${order.orderId}
 
-            if(ding){
+</h2>
 
-                ding.currentTime=0;
 
-                ding.play().catch(()=>{});
 
-            }
+<p>
+🥤 ${order.product}
+</p>
 
-        }
 
-        oldOrders=[...data];
+<p>
+杯數：${order.qty}
+</p>
 
-        firstLoad=false;
 
-    }
+<p>
+金額：${order.total} 元
+</p>
 
-    catch(error){
 
-        console.error(error);
 
-    }
+<p>
+
+狀態：
+
+<span class="status ${statusClass}">
+
+${order.status}
+
+</span>
+
+
+</p>
+
+
+
+
+<button class="start"
+
+onclick="updateStatus('${order.id}','製作中')">
+
+開始製作
+
+</button>
+
+
+
+<button class="finish"
+
+onclick="finishOrder('${order.id}','${order.orderId}')">
+
+完成叫號
+
+</button>
+
+
+
+<button class="cancel"
+
+onclick="cancelOrder('${order.id}')">
+
+取消訂單
+
+</button>
+
+
+
+</div>
+
+
+
+`;
+
+
+
+});
+
+
+
+
+// 新訂單提示
+
+if(!firstLoad && data.length>oldOrders.length){
+
+
+const ding=document.getElementById("ding");
+
+
+if(ding){
+
+ding.currentTime=0;
+
+ding.play().catch(()=>{});
+
 
 }
 
+
+}
+
+
+
+oldOrders=[...data];
+
+firstLoad=false;
+
+
+
+// 更新 Dashboard
+
+updateDashboard(data);
+
+
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+
+}
+
+
+
+
+
 // =========================
-// 修改訂單狀態
+// 完成訂單 + 叫號
 // =========================
+
+
+async function finishOrder(id,number){
+
+
+await updateStatus(id,"完成");
+
+
+// 語音播報
+
+callNumber(number);
+
+
+}
+
+
+
+
+
+// =========================
+// 語音叫號
+// =========================
+
+
+function callNumber(number){
+
+
+let text =
+`${number} 已完成，請取餐`;
+
+
+
+let speech =
+new SpeechSynthesisUtterance(text);
+
+
+speech.lang="zh-TW";
+
+speech.rate=0.9;
+
+
+window.speechSynthesis.speak(speech);
+
+
+
+}
+
+
+
+
+// =========================
+// 修改狀態
+// =========================
+
 
 async function updateStatus(id,status){
 
-    try{
 
-        await fetch(API_URL,{
 
-            method:"POST",
+await fetch(API_URL,{
 
-            headers:{
-                "Content-Type":"text/plain"
-            },
 
-            body:JSON.stringify({
+method:"POST",
 
-                type:"update",
 
-                id:id,
+headers:{
 
-                status:status
+"Content-Type":"text/plain"
 
-            })
+},
 
-        });
 
-        loadOrders();
+body:JSON.stringify({
 
-    }
 
-    catch(error){
+type:"update",
 
-        console.error(error);
+id:id,
 
-        alert("更新失敗");
+status:status
 
-    }
+
+})
+
+
+});
+
+
+loadOrders();
+
+
 
 }
 
+
+
+
 // =========================
-// 自動更新
+// 取消訂單
 // =========================
 
+
+async function cancelOrder(id){
+
+
+
+if(!confirm("確定取消此訂單？"))
+
+return;
+
+
+
+await fetch(API_URL,{
+
+
+method:"POST",
+
+
+headers:{
+
+"Content-Type":"text/plain"
+
+},
+
+
+body:JSON.stringify({
+
+type:"update",
+
+id:id,
+
+status:"取消"
+
+
+})
+
+
+});
+
+
+
 loadOrders();
+
+
+
+}
+
+
+
+
+// =========================
+// Dashboard
+// =========================
+
+
+function updateDashboard(data){
+
+
+
+let money=0;
+
+let count=0;
+
+
+
+data.forEach(order=>{
+
+
+if(order.status!=="取消"){
+
+
+money += Number(order.total || 0);
+
+
+count += Number(order.qty || 0);
+
+
+}
+
+
+
+});
+
+
+
+const moneyBox=
+document.getElementById("todayMoney");
+
+
+const countBox=
+document.getElementById("todayCount");
+
+
+
+if(moneyBox)
+moneyBox.innerHTML=
+money+" 元";
+
+
+if(countBox)
+countBox.innerHTML=
+count+" 杯";
+
+
+
+}
+
+
+
+
+
+// =========================
+// 商品管理入口
+// =========================
+
+
+function productManage(){
+
+
+location.href="product.html";
+
+
+}
+
+
+
+// =========================
+// 歷史訂單
+// =========================
+
+
+function showHistory(){
+
+
+location.href="history.html";
+
+
+}
+
+
+
+// =========================
+// 登出
+// =========================
+
+
+function logout(){
+
+
+localStorage.removeItem("shopLogin");
+
+
+location.href="login.html";
+
+
+}
+
+
+
+
+// =========================
+// 啟動
+// =========================
+
+
+loadOrders();
+
 
 setInterval(loadOrders,3000);
