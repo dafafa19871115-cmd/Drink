@@ -3,32 +3,271 @@
 // =========================
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbzm6Q2SWnf9VZ6vGM7AEKHjePMpXA4eAe43NJXHMB__UMravExbv4IbkIOFJP1BMG9Mvw/exec";
+"https://script.google.com/macros/s/AKfycbxoR-CczAkLToiZHN42XGNthV91aXLOL_MfAxmhUAGLS7VAUhEeYVivCt7ccCoJCwEygw/exec";
+
 
 
 let oldOrders=[];
 let firstLoad=true;
+
+let allOrders=[];
+
+
+
+// =========================
+// 頁面切換
+// =========================
+
+
+function showPage(page){
+
+
+const box=document.getElementById("content");
+
+
+
+switch(page){
+
+
+case "dashboard":
+
+showDashboard();
+
+break;
+
+
+
+case "orders":
+
+showOrders();
+
+break;
+
+
+
+case "products":
+
+showProducts();
+
+break;
+
+
+
+case "history":
+
+showHistory();
+
+break;
+
+
+}
+
+
+}
+
+
+
+
+
+// =========================
+// Dashboard
+// =========================
+
+
+async function showDashboard(){
+
+
+document.getElementById("content").innerHTML=`
+
+<h1>📊 今日營運</h1>
+
+
+<div class="dashboard">
+
+
+<div class="card">
+
+<h3>今日營業額</h3>
+
+<div class="number" id="money">
+
+讀取中
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>今日杯數</h3>
+
+<div class="number" id="cups">
+
+讀取中
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>🔥 熱賣排行</h3>
+
+<div id="hot">
+
+讀取中
+
+</div>
+
+</div>
+
+
+</div>
+
+`;
+
+
+
+loadOrders();
+
+
+}
+
+
+
+
+// =========================
+// 訂單頁
+// =========================
+
+
+function showOrders(){
+
+
+document.getElementById("content").innerHTML=`
+
+<h1>📦 訂單管理</h1>
+
+
+<div id="orders"></div>
+
+
+`;
+
+
+
+loadOrders();
+
+
+}
+
+
+
+
+// =========================
+// 商品頁
+// =========================
+
+
+function showProducts(){
+
+
+document.getElementById("content").innerHTML=`
+
+<h1>🔍 商品管理</h1>
+
+
+<div id="products">
+
+商品管理載入中...
+
+</div>
+
+`;
+
+
+
+loadProducts();
+
+
+}
+
+
+
+
+
+// =========================
+// 歷史訂單
+// =========================
+
+
+function showHistory(){
+
+
+document.getElementById("content").innerHTML=`
+
+<h1>📅 歷史訂單</h1>
+
+
+<div id="history">
+
+載入中...
+
+</div>
+
+`;
+
+
+
+loadHistory();
+
+
+}
+
+
+
 
 
 // =========================
 // 讀取訂單
 // =========================
 
+
 async function loadOrders(){
+
 
 try{
 
 
-const response=await fetch(API_URL);
+const response =
+await fetch(API_URL);
 
-const data=await response.json();
+
+
+let data =
+await response.json();
+
 
 
 data.reverse();
 
 
 
-const box=document.getElementById("orders");
+allOrders=data;
+
+
+
+const box =
+document.getElementById("orders");
+
+
+
+if(box){
+
 
 box.innerHTML="";
 
@@ -39,7 +278,9 @@ data.forEach(order=>{
 
 const isNew =
 !firstLoad &&
-!oldOrders.some(x=>x.id===order.id);
+!oldOrders.some(
+x=>x.id===order.id
+);
 
 
 
@@ -55,10 +296,10 @@ statusClass="done";
 
 
 
-box.innerHTML += `
+box.innerHTML+=`
 
 
-<div class="order ${isNew?"new-order":""}">
+<div class="order">
 
 
 ${isNew?
@@ -68,11 +309,8 @@ ${isNew?
 
 
 <h2>
-
 ${order.orderId}
-
 </h2>
-
 
 
 <p>
@@ -101,9 +339,7 @@ ${order.status}
 
 </span>
 
-
 </p>
-
 
 
 
@@ -121,7 +357,7 @@ onclick="updateStatus('${order.id}','製作中')">
 
 onclick="finishOrder('${order.id}','${order.orderId}')">
 
-完成叫號
+📢 完成叫號
 
 </button>
 
@@ -131,14 +367,12 @@ onclick="finishOrder('${order.id}','${order.orderId}')">
 
 onclick="cancelOrder('${order.id}')">
 
-取消訂單
+❌ 取消
 
 </button>
 
 
-
 </div>
-
 
 
 `;
@@ -149,21 +383,22 @@ onclick="cancelOrder('${order.id}')">
 
 
 
-
-// 新訂單提示
-
-if(!firstLoad && data.length>oldOrders.length){
+}
 
 
-const ding=document.getElementById("ding");
+
+
+if(!firstLoad &&
+data.length>oldOrders.length){
+
+
+let ding=
+document.getElementById("ding");
 
 
 if(ding){
 
-ding.currentTime=0;
-
 ding.play().catch(()=>{});
-
 
 }
 
@@ -178,29 +413,26 @@ firstLoad=false;
 
 
 
-// 更新 Dashboard
-
 updateDashboard(data);
 
 
 
 }
 
-catch(error){
+catch(e){
 
-console.log(error);
-
-}
-
+console.log(e);
 
 }
 
+
+}
 
 
 
 
 // =========================
-// 完成訂單 + 叫號
+// 完成叫號
 // =========================
 
 
@@ -209,8 +441,6 @@ async function finishOrder(id,number){
 
 await updateStatus(id,"完成");
 
-
-// 語音播報
 
 callNumber(number);
 
@@ -221,21 +451,15 @@ callNumber(number);
 
 
 
-// =========================
-// 語音叫號
-// =========================
-
-
 function callNumber(number){
 
 
-let text =
-`${number} 已完成，請取餐`;
-
-
-
 let speech =
-new SpeechSynthesisUtterance(text);
+new SpeechSynthesisUtterance(
+
+`${number} 已完成，請取餐`
+
+);
 
 
 speech.lang="zh-TW";
@@ -243,8 +467,8 @@ speech.lang="zh-TW";
 speech.rate=0.9;
 
 
-window.speechSynthesis.speak(speech);
 
+speechSynthesis.speak(speech);
 
 
 }
@@ -253,7 +477,7 @@ window.speechSynthesis.speak(speech);
 
 
 // =========================
-// 修改狀態
+// 更新狀態
 // =========================
 
 
@@ -290,11 +514,12 @@ status:status
 });
 
 
+
 loadOrders();
 
 
-
 }
+
 
 
 
@@ -308,43 +533,13 @@ async function cancelOrder(id){
 
 
 
-if(!confirm("確定取消此訂單？"))
+if(!confirm("確定取消訂單？"))
 
 return;
 
 
 
-await fetch(API_URL,{
-
-
-method:"POST",
-
-
-headers:{
-
-"Content-Type":"text/plain"
-
-},
-
-
-body:JSON.stringify({
-
-type:"update",
-
-id:id,
-
-status:"取消"
-
-
-})
-
-
-});
-
-
-
-loadOrders();
-
+await updateStatus(id,"取消");
 
 
 }
@@ -352,8 +547,9 @@ loadOrders();
 
 
 
+
 // =========================
-// Dashboard
+// Dashboard統計
 // =========================
 
 
@@ -363,36 +559,47 @@ function updateDashboard(data){
 
 let money=0;
 
-let count=0;
+let cups=0;
+
+let hot={};
 
 
 
 data.forEach(order=>{
 
 
-if(order.status!=="取消"){
+if(order.status!="取消"){
 
 
-money += Number(order.total || 0);
+money+=Number(order.total||0);
 
 
-count += Number(order.qty || 0);
+cups+=Number(order.qty||0);
+
+
+
+let name=order.product;
+
+
+hot[name]=
+(hot[name]||0)+
+Number(order.qty||0);
+
 
 
 }
-
 
 
 });
 
 
 
-const moneyBox=
-document.getElementById("todayMoney");
+let moneyBox=
+document.getElementById("money");
 
 
-const countBox=
-document.getElementById("todayCount");
+let cupsBox=
+document.getElementById("cups");
 
 
 
@@ -401,10 +608,35 @@ moneyBox.innerHTML=
 money+" 元";
 
 
-if(countBox)
-countBox.innerHTML=
-count+" 杯";
+if(cupsBox)
+cupsBox.innerHTML=
+cups+" 杯";
 
+
+
+let hotBox=
+document.getElementById("hot");
+
+
+
+if(hotBox){
+
+
+let list=
+Object.entries(hot)
+.sort((a,b)=>b[1]-a[1])
+.slice(0,5);
+
+
+
+hotBox.innerHTML=
+list.map(
+(x,i)=>
+`${i+1}. ${x[0]} (${x[1]}杯)`
+)
+.join("<br>");
+
+}
 
 
 }
@@ -412,19 +644,33 @@ count+" 杯";
 
 
 
-
 // =========================
-// 商品管理入口
+// 商品管理
 // =========================
 
 
-function productManage(){
+async function loadProducts(){
 
 
-location.href="product.html";
+
+let box=
+document.getElementById("products");
+
+
+
+if(box)
+
+box.innerHTML=
+
+`
+請使用商品管理模組
+`;
+
 
 
 }
+
+
 
 
 
@@ -433,13 +679,52 @@ location.href="product.html";
 // =========================
 
 
-function showHistory(){
+function loadHistory(){
 
 
-location.href="history.html";
+
+let box=
+document.getElementById("history");
+
+
+
+if(!box)return;
+
+
+
+box.innerHTML="";
+
+
+
+allOrders.forEach(o=>{
+
+
+box.innerHTML+=`
+
+<div class="order">
+
+<h3>
+${o.orderId}
+</h3>
+
+<p>
+${o.product}
+</p>
+
+<p>
+${o.status}
+</p>
+
+</div>
+
+`;
+
+});
 
 
 }
+
+
 
 
 
@@ -461,13 +746,26 @@ location.href="login.html";
 
 
 
-
 // =========================
 // 啟動
 // =========================
 
 
-loadOrders();
+showPage("dashboard");
 
 
 setInterval(loadOrders,3000);
+
+
+
+// 給 HTML onclick 使用
+
+window.showPage=showPage;
+
+window.logout=logout;
+
+window.updateStatus=updateStatus;
+
+window.finishOrder=finishOrder;
+
+window.cancelOrder=cancelOrder;
