@@ -4,270 +4,308 @@
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bing Sha 店家接單後台</title>
+<title>Bing Sha v3.0 商用管理後台</title>
 
 <link rel="stylesheet" href="style.css">
 
 <style>
 
 body{
-
-background:#f2f2f2;
-
+    background:#f2f2f2;
 }
 
 .container{
-
-max-width:900px;
-
-margin:auto;
-
-padding:20px;
-
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
 }
 
 h1{
+    text-align:center;
+    color:#ff5722;
+}
 
+
+/* Dashboard */
+
+.dashboard{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+margin-bottom:25px;
+
+}
+
+
+.card{
+
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 4px 10px #ddd;
 text-align:center;
 
-margin-bottom:20px;
+}
+
+
+.card h2{
 
 color:#ff5722;
 
 }
+
+
+/* 功能 */
+
+.menu{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
+margin-bottom:30px;
+
+}
+
+
+.menu button{
+
+padding:15px;
+border:none;
+border-radius:10px;
+font-size:16px;
+cursor:pointer;
+background:#ff5722;
+color:white;
+
+}
+
+
+/* 訂單 */
+
 
 #orders{
 
 display:grid;
-
 grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-
 gap:20px;
 
 }
 
+
 .order{
 
-background:#fff;
-
-border-radius:12px;
-
+background:white;
 padding:18px;
-
+border-radius:12px;
 box-shadow:0 4px 10px rgba(0,0,0,.15);
 
-position:relative;
-
-transition:.25s;
-
 }
 
-.order:hover{
-
-transform:translateY(-3px);
-
-}
 
 .order h2{
-
-margin-bottom:10px;
 
 color:#ff5722;
 
 }
 
-.order p{
 
-margin:8px 0;
+button{
 
-font-size:16px;
+cursor:pointer;
 
 }
+
 
 .start{
 
-width:100%;
-
-padding:12px;
-
-margin-top:10px;
-
 background:#2196F3;
-
 color:white;
-
-border:none;
-
+border:0;
+padding:12px;
+width:100%;
 border-radius:8px;
-
-font-size:16px;
-
-cursor:pointer;
+margin-top:8px;
 
 }
+
 
 .finish{
 
-width:100%;
-
-padding:12px;
-
-margin-top:10px;
-
 background:#4CAF50;
-
 color:white;
-
-border:none;
-
+border:0;
+padding:12px;
+width:100%;
 border-radius:8px;
-
-font-size:16px;
-
-cursor:pointer;
+margin-top:8px;
 
 }
 
-.start:hover{
 
-background:#1976D2;
+.cancel{
 
-}
-
-.finish:hover{
-
-background:#388E3C;
-
-}
-
-.badge{
-
-position:absolute;
-
-top:-10px;
-
-right:-10px;
-
-background:red;
-
+background:#f44336;
 color:white;
-
-padding:6px 12px;
-
-border-radius:20px;
-
-font-size:14px;
-
-font-weight:bold;
-
-animation:blink .8s infinite;
+border:0;
+padding:12px;
+width:100%;
+border-radius:8px;
+margin-top:8px;
 
 }
 
-@keyframes blink{
 
-0%{
+.call{
 
-transform:scale(1);
-
-}
-
-50%{
-
-transform:scale(1.2);
-
-}
-
-100%{
-
-transform:scale(1);
+background:#9C27B0;
+color:white;
+border:0;
+padding:12px;
+width:100%;
+border-radius:8px;
+margin-top:8px;
 
 }
 
-}
-
-.new-order{
-
-animation:flash .6s ease 4;
-
-}
-
-@keyframes flash{
-
-0%{
-
-background:#fff59d;
-
-}
-
-100%{
-
-background:white;
-
-}
-
-}
-
-.status{
-
-display:inline-block;
-
-padding:5px 12px;
-
-border-radius:15px;
-
-font-weight:bold;
-
-}
-
-.wait{
-
-background:#FFE082;
-
-}
-
-.making{
-
-background:#90CAF9;
-
-}
-
-.done{
-
-background:#A5D6A7;
-
-}
 
 </style>
 
 </head>
 
+
 <body>
+
 
 <div class="container">
 
+
 <h1>
-
-🧋 Bing Sha 店家接單系統
-
+🧋 Bing Sha v3.0 商用管理後台
 </h1>
+
+
+
+<!-- 營業數據 -->
+
+<div class="dashboard">
+
+
+<div class="card">
+
+<h2 id="todayMoney">
+$0
+</h2>
+
+<p>📊 今日營業額</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h2 id="todayCount">
+0
+</h2>
+
+<p>🥤 今日杯數</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+🔥
+</h2>
+
+<p>熱賣排行榜</p>
+
+</div>
+
+
+</div>
+
+
+
+
+<!-- 管理功能 -->
+
+
+<div class="menu">
+
+
+<button onclick="showHistory()">
+
+📅 歷史訂單
+
+</button>
+
+
+
+<button onclick="cancelMode()">
+
+❌ 取消訂單
+
+</button>
+
+
+
+<button onclick="productManage()">
+
+🔍 商品管理
+
+</button>
+
+
+
+<button onclick="logout()">
+
+🔐 登出
+
+</button>
+
+
+</div>
+
+
+
+
+
+<!-- 訂單區 -->
+
+
+<h2>
+📦 最新訂單
+</h2>
+
 
 <div id="orders">
 
 </div>
 
+
+
 </div>
 
-<audio id="ding" preload="auto">
 
-<source src="ding.mp3" type="audio/mpeg">
+
+
+
+<audio id="ding">
+
+<source src="ding.mp3">
 
 </audio>
 
+
+
 <script src="admin.js"></script>
+
 
 </body>
 
