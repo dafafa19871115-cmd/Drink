@@ -15,6 +15,14 @@
 <style>
 
 
+body{
+
+background:#f5f5f5;
+
+}
+
+
+
 .container{
 
 max-width:500px;
@@ -23,13 +31,11 @@ margin:auto;
 
 padding:20px;
 
-text-align:center;
-
 }
 
 
 
-.order-box{
+.box{
 
 background:white;
 
@@ -37,13 +43,15 @@ padding:25px;
 
 border-radius:15px;
 
-box-shadow:0 4px 10px #ddd;
+text-align:center;
+
+box-shadow:0 4px 12px #ddd;
 
 }
 
 
 
-.number{
+.order-number{
 
 font-size:45px;
 
@@ -59,25 +67,11 @@ color:#ff5722;
 
 font-size:25px;
 
+padding:15px;
+
+border-radius:10px;
+
 margin-top:20px;
-
-}
-
-
-
-.done{
-
-color:#4CAF50;
-
-font-weight:bold;
-
-}
-
-
-
-.making{
-
-color:#2196F3;
 
 }
 
@@ -85,19 +79,62 @@ color:#2196F3;
 
 .wait{
 
-color:#ff9800;
+background:#FFE082;
 
 }
 
 
-</style>
 
+.making{
+
+background:#90CAF9;
+
+}
+
+
+
+.done{
+
+background:#A5D6A7;
+
+}
+
+
+
+.notice{
+
+font-size:22px;
+
+margin-top:20px;
+
+animation:flash 1s infinite;
+
+}
+
+
+
+@keyframes flash{
+
+
+50%{
+
+opacity:.3;
+
+}
+
+
+}
+
+
+
+</style>
 
 </head>
 
 
 
 <body>
+
 
 
 <div class="container">
@@ -109,35 +146,22 @@ color:#ff9800;
 
 
 
-<div class="order-box">
+<div class="box">
 
 
-<h2>
-訂單號碼
-</h2>
-
-
-<div id="number" class="number">
+<div id="order">
 
 讀取中...
 
 </div>
 
 
-
-<div id="status" class="status">
-
-查詢中...
-
 </div>
 
 
 
 </div>
 
-
-
-</div>
 
 
 
