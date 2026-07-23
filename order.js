@@ -1,93 +1,148 @@
+// =========================
+// API
+// =========================
+
 const API_URL =
-"https://script.google.com/macros/s/AKfycbxtXHzRCHRZklP_eCY16EvUk_TzvWjg9Ndmx1sXC4QRpO8rFzey1z0VCrAGeLomWNP-mg/exec";
+"https://script.google.com/macros/s/AKfycbzm6Q2SWnf9VZ6vGM7AEKHjePMpXA4eAe43NJXHMB__UMravExbv4IbkIOFJP1BMG9Mvw/exec";
+
+
+
+// 取得訂單ID
 
 const params =
 new URLSearchParams(location.search);
 
-const id =
+
+let orderId =
 params.get("id");
 
-if(!id){
 
-document.body.innerHTML="<h2>找不到訂單</h2>";
 
-throw new Error("No Order");
+// =========================
+// 查詢訂單
+// =========================
 
-}
 
-async function loadOrder(){
+async function checkOrder(){
 
-try{
 
-const response =
-await fetch(
-
-API_URL +
-"?action=order&id=" +
-encodeURIComponent(id)
-
-);
-
-const order =
-await response.json();
-
-if(!order.id){
-
-document.getElementById("status").innerHTML="找不到訂單";
+if(!orderId){
 
 return;
 
 }
 
-document.getElementById("orderId").innerHTML=
-order.orderId;
 
-document.getElementById("product").innerHTML=
-order.product;
 
-document.getElementById("qty").innerHTML=
-order.qty;
+try{
 
-document.getElementById("total").innerHTML=
-order.total;
 
-const status =
+const res =
+await fetch(
+API_URL+
+"?action=order&id="+orderId
+);
+
+
+
+const data =
+await res.json();
+
+
+
+document.getElementById("number")
+.innerHTML =
+data.orderId;
+
+
+
+let status =
 document.getElementById("status");
 
-if(order.status=="待製作"){
 
-status.className="wait";
 
-status.innerHTML="🟡 待製作";
+status.className="status";
 
-}
 
-else if(order.status=="製作中"){
 
-status.className="making";
+if(data.status=="待製作"){
 
-status.innerHTML="🔵 製作中";
 
-}
+status.innerHTML =
+"⏳ 等待製作";
 
-else{
 
-status.className="done";
+status.classList.add("wait");
 
-status.innerHTML="🟢 完成";
 
 }
 
+
+
+else if(data.status=="製作中"){
+
+
+status.innerHTML =
+"🥤 製作中";
+
+
+status.classList.add("making");
+
+
 }
 
-catch(error){
 
-console.error(error);
+
+else if(data.status=="完成"){
+
+
+status.innerHTML =
+`
+📢 ${data.orderId}
+<br>
+已完成，請取餐
+`;
+
+
+
+status.classList.add("done");
+
+
 
 }
 
+
+
+else if(data.status=="取消"){
+
+
+status.innerHTML =
+"❌ 訂單已取消";
+
+
 }
 
-loadOrder();
 
-setInterval(loadOrder,3000);
+
+}
+
+catch(e){
+
+console.log(e);
+
+}
+
+
+
+}
+
+
+
+// 啟動
+
+checkOrder();
+
+
+// 每3秒同步
+
+setInterval(checkOrder,3000);
