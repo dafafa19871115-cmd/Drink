@@ -7,15 +7,17 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>訂單查詢</title>
+<title>Bing Sha 訂單查詢</title>
 
 <link rel="stylesheet" href="style.css">
 
+
 <style>
+
 
 .container{
 
-max-width:600px;
+max-width:500px;
 
 margin:auto;
 
@@ -25,136 +27,125 @@ text-align:center;
 
 }
 
-.card{
 
-background:#fff;
+
+.order-box{
+
+background:white;
 
 padding:25px;
 
 border-radius:15px;
 
-box-shadow:0 5px 15px rgba(0,0,0,.15);
-
-margin-top:20px;
+box-shadow:0 4px 10px #ddd;
 
 }
 
-#status{
 
-font-size:30px;
+
+.number{
+
+font-size:45px;
 
 font-weight:bold;
 
-margin:25px 0;
+color:#ff5722;
 
 }
 
-.wait{
 
-color:#F9A825;
 
-}
+.status{
 
-.making{
-
-color:#1976D2;
-
-}
-
-.done{
-
-color:#388E3C;
-
-}
-
-.info{
-
-font-size:18px;
-
-margin:12px 0;
-
-}
-
-.refresh{
-
-color:#888;
+font-size:25px;
 
 margin-top:20px;
 
-font-size:14px;
+}
+
+
+
+.done{
+
+color:#4CAF50;
+
+font-weight:bold;
 
 }
 
+
+
+.making{
+
+color:#2196F3;
+
+}
+
+
+
+.wait{
+
+color:#ff9800;
+
+}
+
+
 </style>
+
 
 </head>
 
+
+
 <body>
+
 
 <div class="container">
 
-<h1>🧋 Bing Sha</h1>
 
-<div class="card">
+<h1>
+🧋 Bing Sha 取餐查詢
+</h1>
+
+
+
+<div class="order-box">
+
 
 <h2>
-
-您的訂單
-
+訂單號碼
 </h2>
 
-<div class="info">
 
-訂單編號：
-
-<b id="orderId"></b>
-
-</div>
-
-<div class="info">
-
-商品：
-
-<span id="product"></span>
-
-</div>
-
-<div class="info">
-
-杯數：
-
-<span id="qty"></span>
-
-</div>
-
-<div class="info">
-
-金額：
-
-$
-
-<span id="total"></span>
-
-</div>
-
-<div id="status">
+<div id="number" class="number">
 
 讀取中...
 
 </div>
 
-<div class="refresh">
 
-每 3 秒自動更新
+
+<div id="status" class="status">
+
+查詢中...
+
+</div>
+
+
 
 </div>
 
-</div>
+
 
 </div>
+
+
 
 <script src="order.js"></script>
 
+
+
 </body>
+
 
 </html>
