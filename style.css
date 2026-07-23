@@ -1,138 +1,263 @@
-body{
-
-font-family:
-"Microsoft JhengHei",
-Arial,
-sans-serif;
-
-background:#f8f8f8;
-
-padding:15px;
+*{
 
 margin:0;
 
-}
+padding:0;
 
+box-sizing:border-box;
 
-
-h1{
-
-text-align:center;
+font-family:Arial,sans-serif;
 
 }
 
+body{
 
+background:#f5f5f5;
 
-.notice{
+padding:20px;
 
-background:white;
+}
 
-padding:15px;
+.container{
+
+max-width:700px;
+
+margin:auto;
+
+background:#fff;
+
+padding:20px;
 
 border-radius:15px;
 
+box-shadow:0 5px 15px rgba(0,0,0,.15);
+
+}
+
+h1{
+
+text-align:center;
+
+margin-bottom:20px;
+
+color:#ff6b35;
+
+}
+
+.menu{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+
+gap:15px;
+
+margin-bottom:20px;
+
+}
+
+.card{
+
+background:#fff;
+
+border:2px solid #eee;
+
+border-radius:12px;
+
+padding:15px;
+
+text-align:center;
+
+transition:.2s;
+
+}
+
+.card:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 4px 10px rgba(0,0,0,.15);
+
+}
+
+.card h3{
+
+margin-bottom:10px;
+
+}
+
+.card p{
+
+font-size:18px;
+
+font-weight:bold;
+
+color:#ff5722;
+
+margin-bottom:10px;
+
+}
+
+.card button{
+
+width:100%;
+
+padding:10px;
+
+border:none;
+
+background:#4CAF50;
+
+color:white;
+
+border-radius:8px;
+
+cursor:pointer;
+
+font-size:16px;
+
+}
+
+.card button:hover{
+
+background:#388E3C;
+
+}
+
+#cart{
+
+margin-top:10px;
+
 margin-bottom:15px;
+
+}
+
+.cart-item{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:10px;
+
+margin-bottom:8px;
+
+background:#fafafa;
+
+border-radius:8px;
+
+}
+
+.qty{
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+}
+
+.qty button{
+
+width:28px;
+
+height:28px;
+
+border:none;
+
+border-radius:50%;
+
+background:#2196F3;
+
+color:white;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+.qty button:hover{
+
+background:#1976D2;
+
+}
+
+#total{
+
+margin:20px 0;
+
+text-align:right;
+
+color:#d32f2f;
+
+}
+
+#submitBtn{
+
+width:100%;
+
+padding:15px;
+
+border:none;
+
+border-radius:10px;
+
+background:#ff5722;
+
+color:white;
+
+font-size:18px;
+
+cursor:pointer;
+
+}
+
+#submitBtn:hover{
+
+background:#e64a19;
+
+}
+
+#submitBtn:disabled{
+
+background:#999;
+
+cursor:not-allowed;
+
+}
+
+#result{
+
+margin-top:20px;
+
+padding:15px;
+
+background:#E8F5E9;
+
+border-radius:10px;
 
 text-align:center;
 
 font-size:18px;
 
-}
+font-weight:bold;
 
+color:#2E7D32;
 
-
-
-.card{
-
-background:white;
-
-padding:18px;
-
-border-radius:18px;
-
-margin-bottom:15px;
-
-box-shadow:
-0 3px 10px rgba(0,0,0,0.1);
+word-break:break-all;
 
 }
-
-
-
-button{
-
-width:100%;
-
-padding:14px;
-
-font-size:18px;
-
-border:0;
-
-border-radius:12px;
-
-background:#ff9f43;
-
-color:white;
-
-}
-
-
-
-#cart p{
-
-background:white;
-
-padding:10px;
-
-border-radius:10px;
-
-}
-
-
-
-.closed{
-
-background:#ffd6d6;
-
-color:#d00000;
-
-}
-
-
-
-.open{
-
-background:#d8ffd8;
-
-color:#198754;
-
-}
-
-
 
 @media(max-width:600px){
 
+.menu{
 
-h1{
-
-font-size:26px;
-
-}
-
-
-.card h3{
-
-font-size:22px;
+grid-template-columns:1fr;
 
 }
-
-
-button{
-
-font-size:20px;
-
-}
-
 
 }
