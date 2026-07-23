@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bing Sha 店家登入</title>
+
+<link rel="stylesheet" href="style.css">
+
+
+<style>
+
+.login-box{
+
+max-width:400px;
+
+margin:80px auto;
+
+background:white;
+
+padding:30px;
+
+border-radius:15px;
+
+box-shadow:0 4px 15px #ccc;
+
+text-align:center;
+
+}
+
+
+input{
+
+width:90%;
+
+padding:12px;
+
+margin:10px;
+
+font-size:16px;
+
+border-radius:8px;
+
+border:1px solid #ccc;
+
+}
+
+
+
+button{
+
+width:95%;
+
+padding:12px;
+
+background:#ff5722;
+
+color:white;
+
+border:none;
+
+border-radius:8px;
+
+font-size:18px;
+
+cursor:pointer;
+
+}
+
+
+
+button:hover{
+
+background:#e64a19;
+
+}
+
+
+#error{
+
+color:red;
+
+margin-top:15px;
+
+}
+
+
+</style>
+
+
+</head>
+
+
+<body>
+
+
+<div class="login-box">
+
+
+<h1>
+🧋 Bing Sha
+</h1>
+
+
+<h2>
+店家管理登入
+</h2>
+
+
+
+<input 
+id="account"
+placeholder="帳號">
+
+
+
+<input 
+id="password"
+type="password"
+placeholder="密碼">
+
+
+
+<button onclick="login()">
+
+登入
+
+</button>
+
+
+
+<p id="error"></p>
+
+
+
+</div>
+
+
+
+<script src="login.js"></script>
+
+
+</body>
+
+</html>
