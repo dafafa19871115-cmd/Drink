@@ -7,40 +7,163 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bing Sha 點餐系統</title>
+<title>Bing Sha 智慧點餐系統 v3.0</title>
 
 <link rel="stylesheet" href="style.css">
 
+
+<style>
+
+
+.order-status{
+
+background:white;
+
+padding:15px;
+
+border-radius:12px;
+
+margin-top:20px;
+
+box-shadow:0 3px 8px #ddd;
+
+}
+
+
+
+#orderNumber{
+
+font-size:32px;
+
+color:#ff5722;
+
+font-weight:bold;
+
+text-align:center;
+
+}
+
+
+
+</style>
+
+
 </head>
+
+
 
 <body>
 
+
 <div class="container">
 
-<h1>🧋 Bing Sha 點餐</h1>
 
-<div id="menu" class="menu"></div>
 
-<hr>
+<h1>
+🧋 Bing Sha 點餐
+</h1>
 
-<h2>🛒 購物車</h2>
 
-<div id="cart"></div>
 
-<h3 id="total">
-總金額：0 元
-</h3>
+<!-- 商品區 -->
 
-<button id="submitBtn" onclick="submitOrder()">
-送出訂單
-</button>
 
-<p id="result"></p>
+<div id="menu" class="menu">
+
 
 </div>
 
+
+
+<hr>
+
+
+
+<!-- 購物車 -->
+
+
+<h2>
+🛒 購物車
+</h2>
+
+
+<div id="cart">
+
+
+</div>
+
+
+
+<h3 id="total">
+
+總金額：0 元
+
+</h3>
+
+
+
+<button id="submitBtn"
+onclick="submitOrder()">
+
+送出訂單
+
+</button>
+
+
+
+
+<!-- 訂單查詢 -->
+
+
+<div class="order-status">
+
+
+<h2>
+📢 我的訂單
+</h2>
+
+
+<div id="orderNumber">
+
+尚未下單
+
+</div>
+
+
+
+<p id="status">
+
+請完成點餐
+
+</p>
+
+
+
+<button onclick="checkOrder()">
+
+🔍 查詢訂單狀態
+
+</button>
+
+
+
+</div>
+
+
+
+
+<p id="result"></p>
+
+
+
+</div>
+
+
+
 <script src="app.js"></script>
 
+
 </body>
+
 
 </html>
