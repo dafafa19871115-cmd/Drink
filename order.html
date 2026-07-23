@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>訂單查詢</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+.container{
+
+max-width:600px;
+
+margin:auto;
+
+padding:20px;
+
+text-align:center;
+
+}
+
+.card{
+
+background:#fff;
+
+padding:25px;
+
+border-radius:15px;
+
+box-shadow:0 5px 15px rgba(0,0,0,.15);
+
+margin-top:20px;
+
+}
+
+#status{
+
+font-size:30px;
+
+font-weight:bold;
+
+margin:25px 0;
+
+}
+
+.wait{
+
+color:#F9A825;
+
+}
+
+.making{
+
+color:#1976D2;
+
+}
+
+.done{
+
+color:#388E3C;
+
+}
+
+.info{
+
+font-size:18px;
+
+margin:12px 0;
+
+}
+
+.refresh{
+
+color:#888;
+
+margin-top:20px;
+
+font-size:14px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🧋 Bing Sha</h1>
+
+<div class="card">
+
+<h2>
+
+您的訂單
+
+</h2>
+
+<div class="info">
+
+訂單編號：
+
+<b id="orderId"></b>
+
+</div>
+
+<div class="info">
+
+商品：
+
+<span id="product"></span>
+
+</div>
+
+<div class="info">
+
+杯數：
+
+<span id="qty"></span>
+
+</div>
+
+<div class="info">
+
+金額：
+
+$
+
+<span id="total"></span>
+
+</div>
+
+<div id="status">
+
+讀取中...
+
+</div>
+
+<div class="refresh">
+
+每 3 秒自動更新
+
+</div>
+
+</div>
+
+</div>
+
+<script src="order.js"></script>
+
+</body>
+
+</html>
