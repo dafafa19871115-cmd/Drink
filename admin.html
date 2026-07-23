@@ -7,149 +7,151 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bing Sha 接單後台</title>
+<title>Bing Sha 店家接單後台</title>
 
+<link rel="stylesheet" href="style.css">
 
 <style>
 
-
-*{
-box-sizing:border-box;
-}
-
-
 body{
 
-font-family:
-"Microsoft JhengHei",
-Arial,
-sans-serif;
-
-background:#f5f5f5;
-
-padding:15px;
-
-margin:0;
+background:#f2f2f2;
 
 }
 
+.container{
 
+max-width:900px;
+
+margin:auto;
+
+padding:20px;
+
+}
 
 h1{
 
 text-align:center;
 
-font-size:26px;
+margin-bottom:20px;
+
+color:#ff5722;
 
 }
 
+#orders{
 
+display:grid;
 
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
 
-.box{
-
-background:white;
-
-border-radius:18px;
-
-padding:18px;
-
-margin-bottom:15px;
-
-box-shadow:
-0 3px 10px rgba(0,0,0,0.12);
+gap:20px;
 
 }
-
-
-
-
-.status{
-
-font-size:22px;
-
-font-weight:bold;
-
-text-align:center;
-
-padding:10px;
-
-border-radius:15px;
-
-}
-
-
-
-.open{
-
-background:#d8ffd8;
-
-color:#198754;
-
-}
-
-
-
-.close{
-
-background:#ffd9d9;
-
-color:#dc3545;
-
-}
-
-
 
 .order{
 
+background:#fff;
 
-background:white;
-
-border-radius:18px;
+border-radius:12px;
 
 padding:18px;
 
-margin-bottom:15px;
+box-shadow:0 4px 10px rgba(0,0,0,.15);
 
-box-shadow:
-0 3px 10px rgba(0,0,0,0.12);
+position:relative;
 
-
-}
-
-
-
-.new-order{
-
-border:3px solid #ff9800;
-
-animation:newOrder 0.8s infinite;
+transition:.25s;
 
 }
 
+.order:hover{
 
-
-@keyframes newOrder{
-
-
-50%{
-
-transform:scale(1.03);
+transform:translateY(-3px);
 
 }
 
+.order h2{
+
+margin-bottom:10px;
+
+color:#ff5722;
 
 }
 
+.order p{
 
+margin:8px 0;
 
+font-size:16px;
 
+}
+
+.start{
+
+width:100%;
+
+padding:12px;
+
+margin-top:10px;
+
+background:#2196F3;
+
+color:white;
+
+border:none;
+
+border-radius:8px;
+
+font-size:16px;
+
+cursor:pointer;
+
+}
+
+.finish{
+
+width:100%;
+
+padding:12px;
+
+margin-top:10px;
+
+background:#4CAF50;
+
+color:white;
+
+border:none;
+
+border-radius:8px;
+
+font-size:16px;
+
+cursor:pointer;
+
+}
+
+.start:hover{
+
+background:#1976D2;
+
+}
+
+.finish:hover{
+
+background:#388E3C;
+
+}
 
 .badge{
 
-display:inline-block;
+position:absolute;
 
-background:#ff5722;
+top:-10px;
+
+right:-10px;
+
+background:red;
 
 color:white;
 
@@ -157,392 +159,115 @@ padding:6px 12px;
 
 border-radius:20px;
 
+font-size:14px;
+
+font-weight:bold;
+
+animation:blink .8s infinite;
+
+}
+
+@keyframes blink{
+
+0%{
+
+transform:scale(1);
+
+}
+
+50%{
+
+transform:scale(1.2);
+
+}
+
+100%{
+
+transform:scale(1);
+
+}
+
+}
+
+.new-order{
+
+animation:flash .6s ease 4;
+
+}
+
+@keyframes flash{
+
+0%{
+
+background:#fff59d;
+
+}
+
+100%{
+
+background:white;
+
+}
+
+}
+
+.status{
+
+display:inline-block;
+
+padding:5px 12px;
+
+border-radius:15px;
+
 font-weight:bold;
 
 }
 
+.wait{
 
-
-button{
-
-
-width:100%;
-
-padding:14px;
-
-margin-top:8px;
-
-border:0;
-
-border-radius:12px;
-
-font-size:18px;
+background:#FFE082;
 
 }
 
+.making{
 
-
-.start{
-
-background:#ffc107;
+background:#90CAF9;
 
 }
 
+.done{
 
-
-.finish{
-
-background:#4caf50;
-
-color:white;
+background:#A5D6A7;
 
 }
-
-
-
-.checkout{
-
-background:#ff9800;
-
-color:white;
-
-}
-
-
-
-.search{
-
-display:flex;
-
-gap:10px;
-
-}
-
-
-
-.search input{
-
-
-flex:1;
-
-padding:12px;
-
-font-size:16px;
-
-border-radius:10px;
-
-border:1px solid #ccc;
-
-
-}
-
-
-
-.search button{
-
-
-width:100px;
-
-background:#2196f3;
-
-color:white;
-
-
-}
-
-
-
-
-.report-grid{
-
-
-display:grid;
-
-grid-template-columns:1fr 1fr;
-
-gap:10px;
-
-
-}
-
-
-
-.report-item{
-
-
-background:#fafafa;
-
-padding:12px;
-
-border-radius:12px;
-
-text-align:center;
-
-
-}
-
-
-
-
-@media(max-width:600px){
-
-
-
-h1{
-
-font-size:24px;
-
-}
-
-
-
-.report-grid{
-
-
-grid-template-columns:1fr 1fr;
-
-
-}
-
-
-
-.order h2{
-
-font-size:22px;
-
-}
-
-
-}
-
-
 
 </style>
 
-
 </head>
-
-
 
 <body>
 
-
+<div class="container">
 
 <h1>
 
-🧋 Bing Sha 接單後台
+🧋 Bing Sha 店家接單系統
 
 </h1>
 
-
-
-
-
-<!-- 營業狀態 -->
-
-<div class="box">
-
-
-<div id="businessStatus"
-
-class="status">
-
-檢查營業狀態中...
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-<!-- 報表 -->
-
-
-<div class="box">
-
-
-<h2>
-📊 營業報表
-</h2>
-
-
-
-<div class="search">
-
-
-<input
-
-type="date"
-
-id="reportDateInput">
-
-
-<button onclick="searchReport()">
-
-查詢
-
-</button>
-
-
-</div>
-
-
-
-
-
-<br>
-
-
-
-<div class="report-grid">
-
-
-<div class="report-item">
-
-🧾 訂單
-
-<br>
-
-<span id="reportOrders">
-0
-</span>
-
-</div>
-
-
-
-<div class="report-item">
-
-🥤 杯數
-
-<br>
-
-<span id="reportCups">
-0
-</span>
-
-</div>
-
-
-
-
-<div class="report-item">
-
-💰 金額
-
-<br>
-
-<span id="reportSales">
-0
-</span>
-
-</div>
-
-
-
-
-<div class="report-item">
-
-⏳ 待製作
-
-<br>
-
-<span id="reportPending">
-0
-</span>
-
-</div>
-
-
-
-<div class="report-item">
-
-🔥 製作中
-
-<br>
-
-<span id="reportMaking">
-0
-</span>
-
-</div>
-
-
-
-<div class="report-item">
-
-✅ 完成
-
-<br>
-
-<span id="reportDone">
-0
-</span>
-
-</div>
-
-
-
-</div>
-
-
-
-<button
-
-class="checkout"
-
-onclick="checkoutToday()">
-
-💰 今日結帳
-
-</button>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<!-- 訂單 -->
-
 <div id="orders">
 
-
-載入訂單中...
-
+</div>
 
 </div>
 
+<audio id="ding" preload="auto">
 
-
-
-
-
-
-<audio
-
-id="ding"
-
-src="ding.mp3">
+<source src="ding.mp3" type="audio/mpeg">
 
 </audio>
 
-
-
-
-
 <script src="admin.js"></script>
-
 
 </body>
 
